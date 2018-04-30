@@ -4,6 +4,6 @@ project(battleship-game)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable (hello_world test/hello_world.cc)
+add_executable(hello_world test/hello_world.cc)
 
-add_executable (test_main test/test.cc test/test_timer.h)
+add_executable(test_main test/test.cc test/test_timer.h)
