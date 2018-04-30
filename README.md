@@ -4,7 +4,35 @@ implementation of classic [Battleship Game](https://en.wikipedia.org/wiki/Battle
 
 ## Design
 
-### Board
+### Overview
+
+#### Server
+
+The server is able to host multiple games at one time.
+
+In the game, the server only expect two commands from the client:
+
+1. place the ship (location, direction)
+
+2. attack the location
+
+The server will in turn gives two kind of responses:
+
+1. placement response (succeed or not)
+
+2. attack response (hit or not)
+
+#### Client
+
+in the game, the client should only send two commands:
+
+1. place the ship (location, direction)
+
+2. attack the location
+
+### Classes
+
+#### Board
 
 Class board is a game board for one player. The board should keep a record of:
 
@@ -26,7 +54,7 @@ we then use two bit flags to indicate each of these two states of the location:
 
 we also need a way to refer to corresponding ship when a location is being attack, so we store the ship pointers into a 10 * 10 array and the array index indicates the location.
 
-### Ship
+#### Ship
 
 Class ship includes all information about a ship on board:
 

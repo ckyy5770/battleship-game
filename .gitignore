@@ -1,9 +1,6 @@
 # the build dir
 build/
 
-# the test main
-test/test.cc
-
 ### for c++
 # Prerequisites
 *.d
