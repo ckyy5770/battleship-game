@@ -21,7 +21,7 @@ enum ShipType{
   kCarrier,
   kBattleShip,
   kCruiser,
-  kDestoryer
+  kDestroyer
 };
 
 // get size of the ship
@@ -36,7 +36,7 @@ std::size_t GetSizeFromType(ShipType type){
     case kCruiser:{
       return 3;
     }
-    case kDestoryer:{
+    case kDestroyer:{
       return 2;
     }
     default:{

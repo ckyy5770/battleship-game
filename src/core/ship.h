@@ -25,8 +25,8 @@ public:
         remaining_life_ = GetSizeFromType(kCruiser);
         break;
       }
-      case kDestoryer:{
-        remaining_life_ = GetSizeFromType(kDestoryer);
+      case kDestroyer:{
+        remaining_life_ = GetSizeFromType(kDestroyer);
         break;
       }
       default:{
