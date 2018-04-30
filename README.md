@@ -58,10 +58,12 @@ we also need a way to refer to corresponding ship when a location is being attac
 
 Class ship includes all information about a ship on board:
 
-1. size
+1. ship type
 
-2. remaining life
+2. size
 
-3. head location
+3. remaining life
 
-4. direction (vertical or horizontal)
+4. head location
+
+5. direction (vertical or horizontal)
