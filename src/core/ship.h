@@ -14,23 +14,19 @@ public:
       direction_(kUndefined){
     switch(type_){
       case kCarrier:{
-        size_ = 5;
-        remaining_life_ = 5;
+        remaining_life_ = GetSizeFromType(kCarrier);
         break;
       }
       case kBattleShip:{
-        size_ = 4;
-        remaining_life_ = 4;
+        remaining_life_ = GetSizeFromType(kBattleShip);
         break;
       }
       case kCruiser:{
-        size_ = 3;
-        remaining_life_ = 3;
+        remaining_life_ = GetSizeFromType(kCruiser);
         break;
       }
       case kDestoryer:{
-        size_ = 2;
-        remaining_life_ = 2;
+        remaining_life_ = GetSizeFromType(kDestoryer);
         break;
       }
       default:{
@@ -55,7 +51,6 @@ public:
 
 private:
   ShipType type_;
-  std::size_t size_;
   std::size_t remaining_life_;
   std::size_t head_location_;
   Direction direction_;
