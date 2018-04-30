@@ -16,6 +16,55 @@ public:
     std::memset(which_ship_, 0, sizeof(Ship*) * kDim * kDim);
   }
 
+  // place a ship
+  bool PlaceOneShip(ShipType type, std::size_t head_location, Direction direction){
+    if(!CanPlaceMore(type) || !DoesShipFit(type, head_location, direction)){
+      return false;
+    }
+
+    // make a ship, append it to the ship list
+    on_board_ships_.push_back(Ship(type));
+    // ref to the new ship
+    Ship new_ship = on_board_ships_.back();
+
+    // place the ship
+    // TODO: possible code duplication
+    std::size_t size = GetSizeFromType(type);
+    std::size_t row = head_location / kDim;
+    std::size_t col = head_location % kDim;
+
+    switch(direction){
+      case kVertical:{
+        // since we checked
+        assert(row + size - 1 >= kDim);
+        // turn on OCCUPIED flag, connect the occupied location and the corresponding ship via pointer
+        for(std::size_t i = 0; i < size; i++){
+          states_[head_location + i * kDim] |= OCCUPIED;
+          which_ship_[head_location + i * kDim] = &new_ship;
+        }
+        break;
+      }
+      case kHorisontal:{
+        // since we checked
+        assert(col + size - 1 >= kDim);
+        // turn on OCCUPIED flag, connect the occupied location and the corresponding ship via pointer
+        for(std::size_t i = 0; i < size; i++){
+          states_[head_location + i] |= OCCUPIED;
+          which_ship_[head_location + i] = &new_ship;
+        }
+        break;
+      }
+      default:{
+        assert(false);
+      }
+    }
+
+    new_ship.PlaceShip(head_location, direction);
+    ships_alive_ += 1;
+
+    return true;
+  }
+
 private:
   static const std::size_t kDim = 10;
   static const std::size_t kCarrierNum = 1;
@@ -33,30 +82,20 @@ private:
   static const unsigned char OCCUPIED = 1 << 0;
   static const unsigned char ATTACKED = 1 << 1;
 
-  // ships that not on board, should be placed by calling PlaceShip
-  //std::list<Ship> availale_ships_;
   // ships that on the board
   std::list<Ship> on_board_ships_;
-  // live ships on the board
+  // the number of live ships on the board
   std::size_t ships_alive_;
   // bit flag indicates the state of one spot
   unsigned char states_[kDim * kDim];
   // ship pointers indicates the ship pointer of one spot
   Ship* which_ship_[kDim * kDim];
 
-  /*
-  void MakeShips(ShipType type, std::size_t num){
-    for(std::size_t i = 0; i < num; i++){
-      availale_ships_.push_back(Ship(type));
-    }
-    ships_alive_ += num;
-  }
-  */
-
   // test if the given type ship fits the given place
   bool DoesShipFit(ShipType type, std::size_t head_location, Direction direction){
     if(head_location >= kDim * kDim) return false;
 
+    // TODO: possible code duplication
     std::size_t size = GetSizeFromType(type);
     std::size_t row = head_location / kDim;
     std::size_t col = head_location % kDim;
@@ -88,12 +127,29 @@ private:
     return true;
   }
 
-  // TODO: place a ship
-  bool PlaceOneShip(ShipType ship, std::size_t head_location, Direction direction){
-    //if(carrier_num_ >= kCarrierNum)
-
-    return true;
+  // test if there are enough number of certain type of ships on board
+  bool CanPlaceMore(ShipType type){
+    switch(type){
+      case kCarrier:{
+        return carrier_num_ < kCarrierNum;
+      }
+      case kBattleShip:{
+        return battleship_num_ < kBattleShipNum;
+      }
+      case kCruiser:{
+        return cruiser_num_ < kCruiserNum;
+      }
+      case kDestroyer:{
+        return destroyer_num_ < kDestroyerNum;
+      }
+      default:{
+        assert(false);
+      }
+    }
   }
+
+
+
 
 };
 
