@@ -1,5 +1,8 @@
 // Created by Chuilian Kong April 30, 2018
 
+#ifndef CORE_SHIP_H_
+#define CORE_SHIP_H_
+
 #include <iostream>
 #include "../utils/utils.h"
 
@@ -57,3 +60,5 @@ private:
   std::size_t head_location_;
   Direction direction_;
 };
+
+#endif  // CORE_SHIP_H_

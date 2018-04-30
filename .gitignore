@@ -1,6 +1,10 @@
 # the build dir
 build/
 
+# util scripts
+/include_guard_writer.py
+/simple-push.py
+
 ### for c++
 # Prerequisites
 *.d

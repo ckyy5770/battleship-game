@@ -1,3 +1,8 @@
+// Created by Chuilian Kong April 30, 2018
+
+#ifndef UTILS_UTILS_H_
+#define UTILS_UTILS_H_
+
 #include <cassert>
 
 // uncomment to disable assert()
@@ -17,3 +22,5 @@ enum ShipType{
   kCruiser,
   kDestoryer
 };
+
+#endif  // UTILS_UTILS_H_
