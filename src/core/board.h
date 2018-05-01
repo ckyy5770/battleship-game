@@ -60,6 +60,7 @@ public:
     }
 
     new_ship.PlaceShip(head_location, direction);
+    AddOneOnBoard(type);
     ships_alive_ += 1;
 
     return true;
@@ -141,6 +142,31 @@ private:
       }
       case kDestroyer:{
         return destroyer_num_ < kDestroyerNum;
+      }
+      default:{
+        assert(false);
+      }
+    }
+  }
+
+  // increment the on board ship number of given type
+  void AddOneOnBoard(ShipType type){
+    switch(type){
+      case kCarrier:{
+        assert(carrier_num_ < kCarrierNum);
+        carrier_num_ += 1;
+      }
+      case kBattleShip:{
+        assert(battleship_num_ < kBattleShipNum);
+        battleship_num_+= 1;
+      }
+      case kCruiser:{
+        assert(cruiser_num_ < kCruiserNum);
+        cruiser_num_ += 1;
+      }
+      case kDestroyer:{
+        assert(destroyer_num_ < kDestroyerNum);
+        destroyer_num_ += 1;
       }
       default:{
         assert(false);
