@@ -7,7 +7,7 @@
 #include <list>
 #include <utility>
 #include <cstring>
-#include "../utils/utils.h"
+#include "utils/utils.h"
 #include "ship.h"
 
 class Board{

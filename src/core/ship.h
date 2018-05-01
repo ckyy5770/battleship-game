@@ -4,7 +4,7 @@
 #define CORE_SHIP_H_
 
 #include <iostream>
-#include "../utils/utils.h"
+#include "utils/utils.h"
 
 class Ship{
 public:

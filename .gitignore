@@ -1,5 +1,6 @@
-# the build dir
+# the build, lib dir
 build/
+lib/
 
 # util scripts
 /include_guard_writer.py
