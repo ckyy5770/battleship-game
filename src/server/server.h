@@ -26,6 +26,7 @@ public:
       std::thread(&Server::Session, this, std::move(socket)).detach();
     }
   }
+  
 private:
   std::size_t listen_port_;
   asio::io_service io_service_;
