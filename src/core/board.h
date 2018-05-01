@@ -5,6 +5,7 @@
 
 #include <iostream>
 #include <list>
+#include <utility>
 #include <cstring>
 #include "../utils/utils.h"
 #include "ship.h"
@@ -64,6 +65,33 @@ public:
     ships_alive_ += 1;
 
     return true;
+  }
+
+  // attack a location
+  // return: the location is OCCUPIED or not (i.e., attack succeed or not),
+  //         if the attack succeed, ShipType tells if a ship sinks, kNotAShip
+  //         means no ships sink due to the current attack.
+  // note: this method throws an exception
+  std::pair<bool, ShipType> Attack(std::size_t location){
+    // we prohibit player to attack the same spot multiple times
+    // it will throw a exception
+    if(states_[location] & ATTACKED){
+      throw kLocationAlreadyAttacked;
+    }
+
+    if(states_[location] & OCCUPIED){
+      // get ref of the attacked ship
+      Ship* p_attacked_ship = which_ship_[location];
+      p_attacked_ship -> Damage();
+      if(p_attacked_ship -> IsAlive()){
+        return std::make_pair(true, kNotAShip);
+      }else{
+        return std::make_pair(true, p_attacked_ship -> GetType());
+      }
+    }else{
+      return std::make_pair(false, kNotAShip);
+    }
+
   }
 
 private:

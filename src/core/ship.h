@@ -49,6 +49,10 @@ public:
     return remaining_life_ > 0;
   }
 
+  ShipType GetType(){
+    return type_;
+  }
+
 private:
   ShipType type_;
   std::size_t remaining_life_;

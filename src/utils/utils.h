@@ -21,7 +21,12 @@ enum ShipType{
   kCarrier,
   kBattleShip,
   kCruiser,
-  kDestroyer
+  kDestroyer,
+  kNotAShip
+};
+
+enum Exception{
+  kLocationAlreadyAttacked
 };
 
 // get size of the ship
