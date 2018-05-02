@@ -4,6 +4,7 @@
 #define UTILS_UTILS_H_
 
 #include <iostream>
+#include <string>
 #include <cassert>
 
 // uncomment to disable assert()
@@ -49,6 +50,10 @@ std::size_t GetSizeFromType(ShipType type){
     }
   }
 
+}
+
+void Logger(const std::string & what){
+  std::cout << what << std::endl;
 }
 
 #endif  // UTILS_UTILS_H_
