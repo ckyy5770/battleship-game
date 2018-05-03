@@ -32,6 +32,7 @@ public:
     switch (state_) {
       case ClientState::kStarted:{
         // TODO: conncet to the game room
+        
         break;
       }
       case ClientState::kConnected:{
