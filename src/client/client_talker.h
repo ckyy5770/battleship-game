@@ -13,26 +13,31 @@ using asio::ip::tcp;
 class ClientTalker{
 public:
   ClientTalker(std::string server_ip, std::size_t server_port):
-    tcp_sock(io_service){
+    tcp_sock_(io_service_){
       tcp::endpoint game_server(asio::ip::address::from_string(server_ip), server_port);
       try{
-        tcp_sock.connect(game_server);
+        tcp_sock_.connect(game_server);
       }catch(std::exception& e){
         std::cerr << "Can't connect to the server: " << e.what() << "\n";
         assert(false);
       }
   }
 
+
   void Start(){
 
   }
 
+
+
   void JoinGame(){
+    //asio::write(tcp_sock_, asio::buffer(request, request_length));
 
   }
 private:
-  asio::io_service io_service;
-  tcp::socket tcp_sock;
+  static const std::size_t kMaxLength = 1024;
+  asio::io_service io_service_;
+  tcp::socket tcp_sock_;
 
 };
 

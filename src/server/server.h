@@ -26,11 +26,11 @@ public:
       std::thread(&Server::Session, this, std::move(socket)).detach();
     }
   }
-  
+
 private:
+  static const std::size_t kMaxLength = 1024;
   std::size_t listen_port_;
   asio::io_service io_service_;
-  static const std::size_t kMaxLength = 1024;
 
   void Session(tcp::socket socket)
   {
