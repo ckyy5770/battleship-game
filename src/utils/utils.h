@@ -10,6 +10,9 @@
 // uncomment to disable assert()
 // #define NDEBUG
 
+typedef unsigned int ClientId;
+typedef unsigned int GameId;
+
 // define Directions
 enum Direction{
   kVertical,

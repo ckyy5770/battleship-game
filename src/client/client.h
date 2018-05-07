@@ -32,7 +32,7 @@ public:
     switch (state_) {
       case ClientState::kStarted:{
         // TODO: conncet to the game room
-        
+
         break;
       }
       case ClientState::kConnected:{
@@ -59,11 +59,11 @@ public:
 private:
   std::string server_ip_;
   std::size_t port_;
-  int my_id_;
+  ClientId my_id_;
   Board my_board_;
 
   // the unique game id, this should be given in cmd
-  int game_id_;
+  GameId game_id_;
 
   // game state
   ClientState state_;
