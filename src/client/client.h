@@ -30,6 +30,7 @@ public:
       case ClientState::kStarted:{
         // conncet to the game room
         cli_talker_.JoinGame();
+        ChangeStateTo(ClientState::kConnected);
         break;
       }
       case ClientState::kConnected:{
