@@ -7,9 +7,11 @@
 #include <cstdlib>
 #include <iostream>
 #include <ctime>
+#include <vector>
 #include "core/board.h"
 #include "utils/utils.h"
 #include "client/client_talker.h"
+#include "client/client_brain.h"
 
 enum class ClientState{
   kStarted,
@@ -20,9 +22,10 @@ enum class ClientState{
 
 class client{
 public:
-  client(const std::string & server_ip, std::size_t port, GameId game_id)
-    : cli_talker_(server_ip, port, game_id),
-      state_(ClientState::kStarted){
+  client(const std::string & server_ip, std::size_t port, GameId game_id):
+    cli_talker_(server_ip, port, game_id),
+    cli_brain_(my_board_),
+    state_(ClientState::kStarted){
   }
 
   void run(){
@@ -52,11 +55,11 @@ public:
       }
     }
 
-
   }
 private:
   Board my_board_;
   ClientTalker cli_talker_;
+  ClientBrain cli_brain_;
 
   // game state
   ClientState state_;
@@ -66,6 +69,20 @@ private:
   void ChangeStateTo(ClientState new_state){
     state_ = new_state;
   }
+
+  void PlaceShips(){
+    std::vector<ShipPlacementInfo> plan = cli_brain_.GenerateShipPlacingPlan(StrategyPlaceShip::kFixed);
+    for(auto placement : plan){
+      if(cli_talker_.PlaceAShip(placement.type, placement.head_location, placement.direction)){
+        my_board_.PlaceAShip(placement.type, placement.head_location, placement.direction);
+      }else{
+        Logger("place ship fail");
+        assert(false);
+      }
+    }
+  }
+
+
 };
 
 

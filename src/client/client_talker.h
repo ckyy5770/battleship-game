@@ -45,6 +45,11 @@ public:
     }
   }
 
+  bool PlaceAShip(ShipType type, std::size_t head_location, Direction direction){
+    // TODO: send place ship request to server, and get reply
+    return true;
+  }
+
 
 
 private:

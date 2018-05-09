@@ -18,7 +18,7 @@ public:
   }
 
   // place a ship
-  bool PlaceOneShip(ShipType type, std::size_t head_location, Direction direction){
+  bool PlaceAShip(ShipType type, std::size_t head_location, Direction direction){
     if(!CanPlaceMore(type) || !DoesShipFit(type, head_location, direction)){
       return false;
     }
