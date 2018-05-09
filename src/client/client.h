@@ -32,18 +32,20 @@ public:
     switch (state_) {
       case ClientState::kStarted:{
         // conncet to the game room
-        cli_talker_.JoinGame();
+        ConnectToGame();
         ChangeStateTo(ClientState::kConnected);
         break;
       }
       case ClientState::kConnected:{
         // place ships
         PlaceShips();
+        ChangeStateTo(ClientState::kReady);
         break;
       }
       case ClientState::kReady:{
-        // wait game start signal from server
+        // send ready message and wait game start signal from server
         WaitGameStartSignal();
+        ChangeStateTo(ClientState::kInGame);
         break;
       }
       case ClientState::kInGame:{
@@ -70,6 +72,10 @@ private:
     state_ = new_state;
   }
 
+  void ConnectToGame(){
+    cli_talker_.JoinGame();
+  }
+
   void PlaceShips(){
     std::vector<ShipPlacementInfo> plan = cli_brain_.GenerateShipPlacingPlan(StrategyPlaceShip::kFixed);
     for(auto placement : plan){
@@ -83,7 +89,7 @@ private:
   }
 
   void WaitGameStartSignal(){
-
+    cli_talker_.SendReadyAndWaitStart();
   }
 
 

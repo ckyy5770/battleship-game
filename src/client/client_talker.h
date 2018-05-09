@@ -61,9 +61,24 @@ public:
     return success;
   }
 
-  void Ready(){
+  void SendReadyAndWaitStart(){
     // notify server this client is ready.
     // wait for game start signal
+    unsigned char request[kMaxBufferLength];
+    std::size_t request_length = 0;
+    MakeRequestReady(request, &request_length, cli_id_, game_id_);
+    asio::write(tcp_sock_, asio::buffer(request, request_length));
+
+    std::size_t length = EnsureReplyTypeAndGetBodyLength(MessageType::kReplyStartGame);
+    unsigned char reply_body[kMaxBufferLength];
+    asio::read(tcp_sock_, asio::buffer(reply_body, length));
+    bool success = false;
+    ResolveReplyStartGame(reply_body, length, &success);
+
+    if(!success){
+      Logger("start game fail");
+      assert(false);
+    }
 
   }
 
