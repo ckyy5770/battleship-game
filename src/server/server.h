@@ -28,7 +28,6 @@ public:
   }
 
 private:
-  static const std::size_t kMaxLength = 1024;
   std::size_t listen_port_;
   asio::io_service io_service_;
 
@@ -38,8 +37,8 @@ private:
     {
       while(true)
       {
-        char request[kMaxLength];
-        char reply[kMaxLength];
+        char request[kMaxBufferLength];
+        char reply[kMaxBufferLength];
 
         asio::error_code error;
         socket.read_some(asio::buffer(request), error);

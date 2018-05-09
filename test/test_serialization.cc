@@ -11,7 +11,7 @@ void test_serialization_general(){
 
   ClientId new_cli_id = 0;
   GameId new_game_id = 0;
-  ResolveRequestJoinGame(request, length, &new_cli_id, &new_game_id);
+  ResolveRequestJoinGame(request + 2, length - 2, &new_cli_id, &new_game_id);
 
   std::cout << "cli_id: " << cli_id << " >> " << new_cli_id << std::endl
             << "game_id: " << game_id << " >> " << new_game_id << std::endl;
@@ -100,7 +100,7 @@ void test_serialization_impl(){
 }
 
 int main(int argc, char** argv){
-  //test_serialization_general();
-  test_serialization_impl();
+  test_serialization_general();
+  //test_serialization_impl();
   return 0;
 }

@@ -9,6 +9,7 @@
 #include <ctime>
 #include "core/board.h"
 #include "utils/utils.h"
+#include "client/client_talker.h"
 
 enum class ClientState{
   kStarted,
@@ -19,20 +20,16 @@ enum class ClientState{
 
 class client{
 public:
-  client(const std::string & server_ip, std::size_t port, int game_id)
-    : server_ip_(server_ip),
-      port_(port),
-      game_id_(game_id),
+  client(const std::string & server_ip, std::size_t port, GameId game_id)
+    : cli_talker_(server_ip, port, game_id),
       state_(ClientState::kStarted){
-
-      ConfigMyID();
   }
 
   void run(){
     switch (state_) {
       case ClientState::kStarted:{
-        // TODO: conncet to the game room
-
+        // conncet to the game room
+        cli_talker_.JoinGame();
         break;
       }
       case ClientState::kConnected:{
@@ -57,24 +54,13 @@ public:
 
   }
 private:
-  std::string server_ip_;
-  std::size_t port_;
-  ClientId my_id_;
   Board my_board_;
-
-  // the unique game id, this should be given in cmd
-  GameId game_id_;
+  ClientTalker cli_talker_;
 
   // game state
   ClientState state_;
 
-  // assign this client a unique 4 Byte id
-  // typically this should be done by applying one from server
-  // but for simplisity, we just give it a random number
-  void ConfigMyID(){
-    std::srand(std::time(nullptr));
-    my_id_ = std::rand();
-  }
+
 
   void ChangeStateTo(ClientState new_state){
     state_ = new_state;

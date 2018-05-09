@@ -10,10 +10,11 @@
 #include "asio.hpp"
 #include "utils/utils.h"
 
-static const std::size_t kMaxBufferLength = 1024;
+static const std::size_t kMaxBufferLength = 256;
 
 enum class MessageType : unsigned char {
-  kRequestJoinGame
+  kRequestJoinGame,
+  kReplyJoinGame
 };
 
 // write type to the byte array
@@ -68,24 +69,38 @@ static void ReadFromByteArray(unsigned char* arr, std::size_t offset, T* data){
 
 // functions for serializing and deserializing request/reply messages
 static void MakeRequestJoinGame(unsigned char* request, std::size_t* length, ClientId cli_id, GameId game_id){
-  // REQUEST_JOIN_GAME (1 Byte) | CLIENT_ID (4 Byte) | SECRET_KEY (4 Byte)
+  // REQUEST_JOIN_GAME (1 Byte) | MESSAGE_REMAINING_BYTES (1 Byte) | CLIENT_ID (4 Byte) | SECRET_KEY (4 Byte)
   std::size_t offset = 0;
-  request[offset++] = static_cast<unsigned char>(MessageType::kRequestJoinGame);
+  request[offset] = static_cast<unsigned char>(MessageType::kRequestJoinGame);
+
+  // request[1] is reserved for REMAINING_BYTES
+  offset += 2;
+
   WriteToByteArray<ClientId>(request, offset, cli_id);
   offset += sizeof(ClientId);
   WriteToByteArray<GameId>(request, offset, game_id);
   offset += sizeof(game_id);
   *length = offset;
+
+  // REMAINING_BYTES
+  request[1] = static_cast<unsigned char>(offset - 2);
+
   assert(*length <= kMaxBufferLength);
 }
 
 static void ResolveRequestJoinGame(unsigned char* request, std::size_t length, ClientId* cli_id, GameId* game_id){
-  // REQUEST_JOIN_GAME (1 Byte) | CLIENT_ID (4 Byte) | SECRET_KEY (4 Byte)
+  // CLIENT_ID (4 Byte) | SECRET_KEY (4 Byte)
   assert(length <= kMaxBufferLength);
-  std::size_t offset = 1;
+  std::size_t offset = 0;
   ReadFromByteArray<ClientId>(request, offset, cli_id);
   offset += sizeof(ClientId);
   ReadFromByteArray<GameId>(request, offset, game_id);
+}
+
+static void ResolveReplyJoinGame(unsigned char* buffer, std::size_t length, bool* success){
+  // SUCCEED_OR_NOT (1 Byte)
+  assert(length <= kMaxBufferLength);
+  ReadFromByteArray<bool>(buffer, 0, success);
 }
 
 #endif  // CORE_NETWORKING_H_

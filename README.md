@@ -28,21 +28,21 @@ The server will in turn gives two kind of responses:
 
 All messages have following format:
 
-`MESSAGE_TYPE (1 Byte) | PAYLOAD`
+`MESSAGE_TYPE (1 Byte) | MESSAGE_REMAINING_BYTES (1 Byte) | PAYLOAD`
 
 Following are specifics of all type of messages:
 
-`REQUEST_JOIN_GAME (1 Byte) | CLIENT_ID (4 Byte) | SECRET_KEY (4 Byte)`
+`REQUEST_JOIN_GAME (1 Byte) | MESSAGE_REMAINING_BYTES (1 Byte) | CLIENT_ID (4 Byte) | SECRET_KEY (4 Byte)`
 
-`REPLY_JOIN_GAME (1 Byte) | SUCCEED_OR_NOT (1 Byte)`
+`REPLY_JOIN_GAME (1 Byte) | MESSAGE_REMAINING_BYTES (1 Byte) | SUCCEED_OR_NOT (1 Byte)`
 
-`REQUEST_PLACE_A_SHIP (1 Byte) | CLIENT_ID (4 Byte) | SECRET_KEY (4 Byte) | LOCATION (4 Byte) | DIRECTION (1 Byte)`
+`REQUEST_PLACE_A_SHIP (1 Byte) | MESSAGE_REMAINING_BYTES (1 Byte) | CLIENT_ID (4 Byte) | SECRET_KEY (4 Byte) | LOCATION (4 Byte) | DIRECTION (1 Byte)`
 
-`REPLY_PLACE_A_SHIP (1 Byte) | SUCCEED_OR_NOT (1 Byte)`
+`REPLY_PLACE_A_SHIP (1 Byte) | MESSAGE_REMAINING_BYTES (1 Byte) | SUCCEED_OR_NOT (1 Byte)`
 
-`REQUEST_ATTACK (1 Byte) | CLIENT_ID (4 Byte) | SECRET_KEY (4 Byte) | LOCATION (4 Byte) | DIRECTION (1 Byte)`
+`REQUEST_ATTACK (1 Byte) | MESSAGE_REMAINING_BYTES (1 Byte) | CLIENT_ID (4 Byte) | SECRET_KEY (4 Byte) | LOCATION (4 Byte) | DIRECTION (1 Byte)`
 
-`REPLY_ATTACK (1 Byte) | SUCCEED_OR_NOT (1 Byte) | SINK_SHIP_TYPE_DURING_ATTACK (1 Byte)`
+`REPLY_ATTACK (1 Byte) | MESSAGE_REMAINING_BYTES (1 Byte) | SUCCEED_OR_NOT (1 Byte) | SINK_SHIP_TYPE_DURING_ATTACK (1 Byte)`
 
 
 ### Classes

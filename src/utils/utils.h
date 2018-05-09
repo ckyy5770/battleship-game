@@ -55,7 +55,7 @@ std::size_t GetSizeFromType(ShipType type){
 
 }
 
-void Logger(const std::string & what){
+static void Logger(const std::string & what){
   std::cout << what << std::endl;
 }
 
