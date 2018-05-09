@@ -105,14 +105,18 @@ static void ResolveReplyJoinGame(unsigned char* buffer, std::size_t length, bool
   ReadFromByteArray<bool>(buffer, 0, success);
 }
 
-static void MakeRequestPlaceAShip(unsigned char* buffer, std::size_t* length, ShipType type, std::size_t head_location, Direction direction){
-  // REQUEST_PLACE_A_SHIP (1 Byte) | MESSAGE_REMAINING_BYTES (1 Byte) | CLIENT_ID (4 Byte) | SECRET_KEY (4 Byte) | LOCATION (4 Byte) | DIRECTION (1 Byte)
+static void MakeRequestPlaceAShip(unsigned char* buffer, std::size_t* length, ClientId cli_id, GameId game_id, ShipType type, std::size_t head_location, Direction direction){
+  // REQUEST_PLACE_A_SHIP (1 Byte) | MESSAGE_REMAINING_BYTES (1 Byte) | CLIENT_ID (4 Byte) | SECRET_KEY (4 Byte) | SHIP_TYPE (4 Byte) | LOCATION (4 Byte) | DIRECTION (1 Byte)
   std::size_t offset = 0;
   buffer[offset] = static_cast<unsigned char>(MessageType::kRequestPlaceAShip);
 
   // request[1] is reserved for REMAINING_BYTES
   offset += 2;
 
+  WriteToByteArray<ClientId>(buffer, offset, cli_id);
+  offset += sizeof(ClientId);
+  WriteToByteArray<GameId>(buffer, offset, game_id);
+  offset += sizeof(game_id);
   WriteToByteArray<ShipType>(buffer, offset, type);
   offset += sizeof(ShipType);
   WriteToByteArray<std::size_t>(buffer, offset, head_location);
@@ -128,10 +132,14 @@ static void MakeRequestPlaceAShip(unsigned char* buffer, std::size_t* length, Sh
   assert(*length <= kMaxBufferLength);
 }
 
-static void ResolveRequestPlaceAShip(unsigned char* buffer, std::size_t length, ShipType* type, std::size_t* head_location, Direction* direction){
+static void ResolveRequestPlaceAShip(unsigned char* buffer, std::size_t length, ClientId* cli_id, GameId* game_id, ShipType* type, std::size_t* head_location, Direction* direction){
   // CLIENT_ID (4 Byte) | SECRET_KEY (4 Byte) | LOCATION (4 Byte) | DIRECTION (1 Byte)
   assert(length <= kMaxBufferLength);
   std::size_t offset = 0;
+  ReadFromByteArray<ClientId>(buffer, offset, cli_id);
+  offset += sizeof(ClientId);
+  ReadFromByteArray<GameId>(buffer, offset, game_id);
+  offset += sizeof(GameId);
   ReadFromByteArray<ShipType>(buffer, offset, type);
   offset += sizeof(ShipType);
   ReadFromByteArray<std::size_t>(buffer, offset, head_location);

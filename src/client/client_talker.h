@@ -49,7 +49,7 @@ public:
     // send place ship request to server, and get reply
     unsigned char request[kMaxBufferLength];
     std::size_t request_length = 0;
-    MakeRequestPlaceAShip(request, &request_length, type, head_location, direction);
+    MakeRequestPlaceAShip(request, &request_length, cli_id_, game_id_, type, head_location, direction);
     asio::write(tcp_sock_, asio::buffer(request, request_length));
 
     std::size_t length = EnsureReplyTypeAndGetBodyLength(MessageType::kReplyPlaceAShip);
@@ -61,10 +61,15 @@ public:
     return success;
   }
 
+  void Ready(){
+    // notify server this client is ready.
+    // wait for game start signal
+
+  }
+
 
 
 private:
-  static const std::size_t kMaxLength = 1024;
   asio::io_service io_service_;
   tcp::socket tcp_sock_;
   // client id will be retrieved from server after ctor

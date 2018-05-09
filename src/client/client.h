@@ -37,12 +37,13 @@ public:
         break;
       }
       case ClientState::kConnected:{
-        // TODO: place ships
+        // place ships
         PlaceShips();
         break;
       }
       case ClientState::kReady:{
-        // TODO: wait game start signal from server
+        // wait game start signal from server
+        WaitGameStartSignal();
         break;
       }
       case ClientState::kInGame:{
@@ -65,8 +66,6 @@ private:
   // game state
   ClientState state_;
 
-
-
   void ChangeStateTo(ClientState new_state){
     state_ = new_state;
   }
@@ -81,6 +80,10 @@ private:
         assert(false);
       }
     }
+  }
+
+  void WaitGameStartSignal(){
+
   }
 
 
