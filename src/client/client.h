@@ -38,6 +38,7 @@ public:
       }
       case ClientState::kConnected:{
         // TODO: place ships
+        PlaceShips();
         break;
       }
       case ClientState::kReady:{
