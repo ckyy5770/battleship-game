@@ -14,7 +14,9 @@ static const std::size_t kMaxBufferLength = 256;
 
 enum class MessageType : unsigned char {
   kRequestJoinGame,
-  kReplyJoinGame
+  kRequestPlaceAShip,
+  kReplyJoinGame,
+  kReplyPlaceAShip
 };
 
 // write type to the byte array
@@ -102,5 +104,47 @@ static void ResolveReplyJoinGame(unsigned char* buffer, std::size_t length, bool
   assert(length <= kMaxBufferLength);
   ReadFromByteArray<bool>(buffer, 0, success);
 }
+
+static void MakeRequestPlaceAShip(unsigned char* buffer, std::size_t* length, ShipType type, std::size_t head_location, Direction direction){
+  // REQUEST_PLACE_A_SHIP (1 Byte) | MESSAGE_REMAINING_BYTES (1 Byte) | CLIENT_ID (4 Byte) | SECRET_KEY (4 Byte) | LOCATION (4 Byte) | DIRECTION (1 Byte)
+  std::size_t offset = 0;
+  buffer[offset] = static_cast<unsigned char>(MessageType::kRequestPlaceAShip);
+
+  // request[1] is reserved for REMAINING_BYTES
+  offset += 2;
+
+  WriteToByteArray<ShipType>(buffer, offset, type);
+  offset += sizeof(ShipType);
+  WriteToByteArray<std::size_t>(buffer, offset, head_location);
+  offset += sizeof(std::size_t);
+  WriteToByteArray<Direction>(buffer, offset, direction);
+  offset += sizeof(Direction);
+
+  *length = offset;
+
+  // REMAINING_BYTES
+  buffer[1] = static_cast<unsigned char>(offset - 2);
+
+  assert(*length <= kMaxBufferLength);
+}
+
+static void ResolveRequestPlaceAShip(unsigned char* buffer, std::size_t length, ShipType* type, std::size_t* head_location, Direction* direction){
+  // CLIENT_ID (4 Byte) | SECRET_KEY (4 Byte) | LOCATION (4 Byte) | DIRECTION (1 Byte)
+  assert(length <= kMaxBufferLength);
+  std::size_t offset = 0;
+  ReadFromByteArray<ShipType>(buffer, offset, type);
+  offset += sizeof(ShipType);
+  ReadFromByteArray<std::size_t>(buffer, offset, head_location);
+  offset += sizeof(std::size_t);
+  ReadFromByteArray<Direction>(buffer, offset, direction);
+}
+
+static void ResolveReplyPlaceAShip(unsigned char* buffer, std::size_t length, bool* success){
+  // SUCCEED_OR_NOT (1 Byte)
+  assert(length <= kMaxBufferLength);
+  ReadFromByteArray<bool>(buffer, 0, success);
+}
+
+
 
 #endif  // CORE_NETWORKING_H_

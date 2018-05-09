@@ -46,8 +46,19 @@ public:
   }
 
   bool PlaceAShip(ShipType type, std::size_t head_location, Direction direction){
-    // TODO: send place ship request to server, and get reply
-    return true;
+    // send place ship request to server, and get reply
+    unsigned char request[kMaxBufferLength];
+    std::size_t request_length = 0;
+    MakeRequestPlaceAShip(request, &request_length, type, head_location, direction);
+    asio::write(tcp_sock_, asio::buffer(request, request_length));
+
+    std::size_t length = EnsureReplyTypeAndGetBodyLength(MessageType::kReplyPlaceAShip);
+    unsigned char reply_body[kMaxBufferLength];
+    asio::read(tcp_sock_, asio::buffer(reply_body, length));
+    bool success = false;
+    ResolveReplyPlaceAShip(reply_body, length, &success);
+
+    return success;
   }
 
 
