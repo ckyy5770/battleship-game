@@ -19,6 +19,7 @@ void test_serialization_general(){
   assert(cli_id == new_cli_id);
   assert(game_id == new_game_id);
 
+
 }
 
 // memcpy implementation 5x faster than bit manipulation implementation for both
