@@ -10,6 +10,12 @@
 // uncomment to disable assert()
 // #define NDEBUG
 
+static const std::size_t kDim = 10;
+static const std::size_t kCarrierNum = 1;
+static const std::size_t kBattleShipNum = 2;
+static const std::size_t kCruiserNum = 3;
+static const std::size_t kDestroyerNum = 4;
+
 typedef unsigned int ClientId;
 typedef unsigned int GameId;
 
@@ -29,8 +35,23 @@ enum ShipType{
   kNotAShip
 };
 
-enum Exception{
-  kLocationAlreadyAttacked
+enum GameException{
+  kLocationAlreadyAttacked,
+  kGameOverWin,
+  kGameOverLose
+};
+
+struct AttackResult{
+  size_t location;
+  bool success;
+  ShipType sink_ship_type;
+  bool attacker_win;
+
+  AttackResult(size_t location, bool success, ShipType sink_ship_type, bool attacker_win):
+    location(location),
+    success(success),
+    sink_ship_type(sink_ship_type),
+    attacker_win(attacker_win){};
 };
 
 // get size of the ship

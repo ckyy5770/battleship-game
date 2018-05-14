@@ -72,7 +72,7 @@ public:
   //         if the attack succeed, ShipType tells if a ship sinks, kNotAShip
   //         means no ships sink due to the current attack.
   // note: this method throws an exception
-  std::pair<bool, ShipType> Attack(std::size_t location){
+  AttackResult Attack(std::size_t location){
     // we prohibit player to attack the same spot multiple times
     // it will throw a exception
     if(states_[location] & ATTACKED){
@@ -84,23 +84,21 @@ public:
       Ship* p_attacked_ship = which_ship_[location];
       p_attacked_ship -> Damage();
       if(p_attacked_ship -> IsAlive()){
-        return std::make_pair(true, kNotAShip);
+        return AttackResult(location, true, kNotAShip, false);
       }else{
-        return std::make_pair(true, p_attacked_ship -> GetType());
+        if(!Lose()){
+          return AttackResult(location, true, p_attacked_ship -> GetType(), false);
+        }else{
+          return AttackResult(location, true, p_attacked_ship -> GetType(), true);
+        }
       }
     }else{
-      return std::make_pair(false, kNotAShip);
+      return AttackResult(location, false, kNotAShip, false);
     }
 
   }
 
 private:
-  static const std::size_t kDim = 10;
-  static const std::size_t kCarrierNum = 1;
-  static const std::size_t kBattleShipNum = 2;
-  static const std::size_t kCruiserNum = 3;
-  static const std::size_t kDestroyerNum = 4;
-
   // ships number currently on board
   std::size_t carrier_num_ = 0;
   std::size_t battleship_num_ = 0;
@@ -183,18 +181,22 @@ private:
       case kCarrier:{
         assert(carrier_num_ < kCarrierNum);
         carrier_num_ += 1;
+        break;
       }
       case kBattleShip:{
         assert(battleship_num_ < kBattleShipNum);
         battleship_num_+= 1;
+        break;
       }
       case kCruiser:{
         assert(cruiser_num_ < kCruiserNum);
         cruiser_num_ += 1;
+        break;
       }
       case kDestroyer:{
         assert(destroyer_num_ < kDestroyerNum);
         destroyer_num_ += 1;
+        break;
       }
       default:{
         assert(false);
@@ -202,8 +204,10 @@ private:
     }
   }
 
-
-
+  // check if I lose
+  bool Lose(){
+    return carrier_num_ == 0 && battleship_num_ == 0 && cruiser_num_ == 0 && destroyer_num_ == 0;
+  }
 
 };
 

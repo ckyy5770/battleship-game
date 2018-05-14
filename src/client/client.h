@@ -17,7 +17,8 @@ enum class ClientState{
   kStarted,
   kConnected,
   kReady,
-  kInGame
+  kInGame,
+  kEndGame
 };
 
 class client{
@@ -29,36 +30,52 @@ public:
   }
 
   void run(){
-    switch (state_) {
-      case ClientState::kStarted:{
-        // conncet to the game room
-        ConnectToGame();
-        ChangeStateTo(ClientState::kConnected);
-        break;
-      }
-      case ClientState::kConnected:{
-        // place ships
-        PlaceShips();
-        ChangeStateTo(ClientState::kReady);
-        break;
-      }
-      case ClientState::kReady:{
-        // send ready message and wait game start signal from server
-        WaitGameStartSignal();
-        ChangeStateTo(ClientState::kInGame);
-        break;
-      }
-      case ClientState::kInGame:{
-        // TODO: make one move, and wait for result,
-        //       wait for enemy's move, update the state
-        //       make another move.
-        break;
-      }
-      default:{
-        assert(false);
-      }
-    }
-
+    while(true){
+      switch (state_) {
+        case ClientState::kStarted:{
+          // conncet to the game room
+          ConnectToGame();
+          ChangeStateTo(ClientState::kConnected);
+          break;
+        }
+        case ClientState::kConnected:{
+          // place ships
+          PlaceShips();
+          ChangeStateTo(ClientState::kReady);
+          break;
+        }
+        case ClientState::kReady:{
+          // send ready message and wait game start signal from server
+          WaitGameStartSignal();
+          ChangeStateTo(ClientState::kInGame);
+          break;
+        }
+        case ClientState::kInGame:{
+          // make one move, and wait for result,
+          // wait for enemy's move, reply with result，
+          // make another move.
+          bool win = MakeOneMove();
+          if(win) {
+            Logger("client wins the game.");
+            ChangeStateTo(ClientState::kEndGame);
+          }
+          bool lose = WaitForEnemyAndReplyWithResult();
+          if(lose){
+            Logger("client loses the game.");
+            ChangeStateTo(ClientState::kEndGame);
+          }
+          break;
+        }
+        case ClientState::kEndGame:{
+          Logger("game over.");
+          CleanUp();
+          return;
+        }
+        default:{
+          assert(false);
+        }
+      } // end of switch statement
+    } // end of while loop
   }
 private:
   Board my_board_;
@@ -92,6 +109,26 @@ private:
     cli_talker_.SendReadyAndWaitStart();
   }
 
+  // return true if win
+  bool MakeOneMove(){
+    AttackResult res = cli_talker_.Attack(cli_brain_.GenerateNextAttackLocation(StrategyAttack::kRandom));
+    if(res.attacker_win) return true;
+    cli_brain_.DigestAttackResult(res);
+    return false;
+  }
+
+  // return true if lose
+  bool WaitForEnemyAndReplyWithResult(){
+    AttackResult res = my_board_.Attack(cli_talker_.GetEnemyMove());
+    if(res.attacker_win) return true;
+    cli_talker_.SendAttackResult(res.success, res.sink_ship_type, res.attacker_win);
+    return false;
+  }
+
+  // TODO
+  void CleanUp(){
+
+  }
 
 };
 

@@ -33,7 +33,7 @@ public:
     MakeRequestJoinGame(request, &request_length, cli_id_, game_id_);
     asio::write(tcp_sock_, asio::buffer(request, request_length));
 
-    std::size_t length = EnsureReplyTypeAndGetBodyLength(MessageType::kReplyJoinGame);
+    std::size_t length = EnsureMessageTypeAndGetBodyLength(MessageType::kReplyJoinGame);
     unsigned char reply_body[kMaxBufferLength];
     asio::read(tcp_sock_, asio::buffer(reply_body, length));
     bool success = false;
@@ -52,7 +52,7 @@ public:
     MakeRequestPlaceAShip(request, &request_length, cli_id_, game_id_, type, head_location, direction);
     asio::write(tcp_sock_, asio::buffer(request, request_length));
 
-    std::size_t length = EnsureReplyTypeAndGetBodyLength(MessageType::kReplyPlaceAShip);
+    std::size_t length = EnsureMessageTypeAndGetBodyLength(MessageType::kReplyPlaceAShip);
     unsigned char reply_body[kMaxBufferLength];
     asio::read(tcp_sock_, asio::buffer(reply_body, length));
     bool success = false;
@@ -69,7 +69,7 @@ public:
     MakeRequestReady(request, &request_length, cli_id_, game_id_);
     asio::write(tcp_sock_, asio::buffer(request, request_length));
 
-    std::size_t length = EnsureReplyTypeAndGetBodyLength(MessageType::kReplyStartGame);
+    std::size_t length = EnsureMessageTypeAndGetBodyLength(MessageType::kReplyStartGame);
     unsigned char reply_body[kMaxBufferLength];
     asio::read(tcp_sock_, asio::buffer(reply_body, length));
     bool success = false;
@@ -82,7 +82,43 @@ public:
 
   }
 
+  AttackResult Attack(size_t location){
+    // send attack request to server, and get reply
+    unsigned char request[kMaxBufferLength];
+    std::size_t request_length = 0;
+    MakeRequestAttack(request, &request_length, cli_id_, game_id_, location);
+    asio::write(tcp_sock_, asio::buffer(request, request_length));
 
+    std::size_t length = EnsureMessageTypeAndGetBodyLength(MessageType::kReplyAttack);
+    unsigned char reply_body[kMaxBufferLength];
+    asio::read(tcp_sock_, asio::buffer(reply_body, length));
+    bool success = false;
+    ShipType sink_ship_type = kNotAShip;
+    bool attacker_win = false;
+    ResolveReplyAttack(reply_body, length, &success, &sink_ship_type, &attacker_win);
+
+    return AttackResult(location, success, sink_ship_type, attacker_win);
+  }
+
+  size_t GetEnemyMove(){
+    // get one enemy move
+    std::size_t length = EnsureMessageTypeAndGetBodyLength(MessageType::kRequestAttack);
+    unsigned char request_body[kMaxBufferLength];
+    asio::read(tcp_sock_, asio::buffer(request_body, length));
+    ClientId client_id = 0;
+    GameId game_id = 0;
+    size_t location = 0;
+    ResolveRequestAttack(request_body, length, &client_id, &game_id, &location);
+    return location;
+  }
+
+  void SendAttackResult(bool success, ShipType type, bool attacker_win){
+    // send attack reply to server
+    unsigned char reply[kMaxBufferLength];
+    std::size_t reply_length = 0;
+    MakeReplyAttack(reply, &reply_length, success, type, attacker_win);
+    asio::write(tcp_sock_, asio::buffer(reply, reply_length));
+  }
 
 private:
   asio::io_service io_service_;
@@ -101,7 +137,7 @@ private:
     cli_id_ = std::rand();
   }
 
-  std::size_t EnsureReplyTypeAndGetBodyLength(MessageType type){
+  std::size_t EnsureMessageTypeAndGetBodyLength(MessageType type){
     unsigned char reply_type[1];
     asio::read(tcp_sock_, asio::buffer(reply_type, 1));
     if(reply_type[0] != static_cast<unsigned char>(type)){

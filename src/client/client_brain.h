@@ -4,11 +4,20 @@
 #define CLIENT_CLIENT_BRAIN_H_
 
 #include <vector>
+#include <algorithm>
+#include <random>
+#include <ctime>
 #include "core/board.h"
+#include "core/imagine_board.h"
 #include "core/ship.h"
+#include "client/client_talker.h"
 
 enum class StrategyPlaceShip{
   kFixed
+};
+
+enum class StrategyAttack{
+  kRandom
 };
 
 struct ShipPlacementInfo{
@@ -27,9 +36,13 @@ class ClientBrain{
 public:
   ClientBrain(Board& client_board):
     my_board_(client_board){
+      for(std::size_t i = 0; i < kDim * kDim; i++){
+        random_array_[i] = i;
+      }
+      std::shuffle(random_array_, random_array_ + kDim * kDim, std::default_random_engine(time(nullptr)));
   }
 
-  std::vector<ShipPlacementInfo> GenerateShipPlacingPlan(StrategyPlaceShip strategy){
+  std::vector<ShipPlacementInfo> GenerateShipPlacingPlan(const StrategyPlaceShip& strategy){
     switch (strategy) {
       case StrategyPlaceShip::kFixed:{
         return GenerateShipPlacingPlanFixed();
@@ -39,12 +52,39 @@ public:
         assert(false);
       }
     }
+  }
+
+  std::size_t GenerateNextAttackLocation(const StrategyAttack& strategy){
+    switch (strategy) {
+      case StrategyAttack::kRandom:{
+        return GenerateNextAttackLocationRandom();
+        break;
+      }
+      default:{
+        assert(false);
+      }
+    }
+  }
+
+  void DigestAttackResult(const AttackResult& res){
+    opponent_board_.MarkAttack(res.location);
+
+    if(res.success){
+      opponent_board_.MarkOccupied(res.location);
+      opponent_board_.DestroyOneOnBoard(res.sink_ship_type);
+    }
 
   }
+
+
 private:
   Board& my_board_;
-  Board opponent_board_;
+  ImagineBoard opponent_board_;
+  // for GenerateNextAttackLocationRandom
+  std::size_t random_array_[kDim * kDim];
+  std::size_t array_ptr_ = 0;
 
+  // ship placement strategies
   std::vector<ShipPlacementInfo> GenerateShipPlacingPlanFixed(){
     std::vector<ShipPlacementInfo> ret;
     ret.push_back(ShipPlacementInfo(ShipType::kCarrier, 0, Direction::kVertical));
@@ -60,6 +100,13 @@ private:
 
     return ret;
   }
+
+  // attack strategies
+  std::size_t GenerateNextAttackLocationRandom(){
+    return random_array_[array_ptr_++];
+  }
+
+
 
 };
 
