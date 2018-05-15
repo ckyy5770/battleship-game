@@ -223,7 +223,7 @@ static void ResolveRequestReady(unsigned char* buffer, std::size_t length, Clien
   ReadFromByteArray<GameId>(buffer, offset, game_id);
 }
 
-static void MakeReplyStartGame(unsigned char* buffer, std::size_t* length, bool success){
+static void MakeReplyStartGame(unsigned char* buffer, std::size_t* length, bool first_fire){
   // REPLY_START_GAME (1 Byte) | MESSAGE_REMAINING_BYTES (1 Byte) | SUCCEED_OR_NOT (1 Byte)
   std::size_t offset = 0;
   buffer[offset] = static_cast<unsigned char>(MessageType::kReplyJoinGame);
@@ -231,7 +231,7 @@ static void MakeReplyStartGame(unsigned char* buffer, std::size_t* length, bool 
   // request[1] is reserved for REMAINING_BYTES
   offset += 2;
 
-  WriteToByteArray<bool>(buffer, offset, success);
+  WriteToByteArray<bool>(buffer, offset, first_fire);
   offset += sizeof(bool);
 
   // REMAINING_BYTES
@@ -240,10 +240,10 @@ static void MakeReplyStartGame(unsigned char* buffer, std::size_t* length, bool 
   assert(*length <= kMaxBufferLength);
 }
 
-static void ResolveReplyStartGame(unsigned char* buffer, std::size_t length, bool* success){
+static void ResolveReplyStartGame(unsigned char* buffer, std::size_t length, bool* first_fire){
   // SUCCEED_OR_NOT (1 Byte)
   assert(length <= kMaxBufferLength);
-  ReadFromByteArray<bool>(buffer, 0, success);
+  ReadFromByteArray<bool>(buffer, 0, first_fire);
 }
 
 static void MakeRequestAttack(unsigned char* buffer, std::size_t* length, ClientId cli_id, GameId game_id, std::size_t location){

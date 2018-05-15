@@ -61,7 +61,8 @@ public:
     return success;
   }
 
-  void SendReadyAndWaitStart(){
+  // return first fire or not
+  bool SendReadyAndWaitStart(){
     // notify server this client is ready.
     // wait for game start signal
     unsigned char request[kMaxBufferLength];
@@ -72,13 +73,10 @@ public:
     std::size_t length = EnsureMessageTypeAndGetBodyLength(MessageType::kReplyStartGame);
     unsigned char reply_body[kMaxBufferLength];
     asio::read(tcp_sock_, asio::buffer(reply_body, length));
-    bool success = false;
-    ResolveReplyStartGame(reply_body, length, &success);
+    bool first_fire = false;
+    ResolveReplyStartGame(reply_body, length, &first_fire);
 
-    if(!success){
-      Logger("start game fail");
-      assert(false);
-    }
+    return first_fire;
 
   }
 
@@ -147,9 +145,9 @@ private:
 
     unsigned char reply_length[1];
     asio::read(tcp_sock_, asio::buffer(reply_length, 1));
-    assert(static_cast<unsigned int>(reply_length[0]) < kMaxBufferLength);
+    assert(static_cast<std::size_t>(reply_length[0]) < kMaxBufferLength);
 
-    return static_cast<unsigned int>(reply_length[0]);
+    return static_cast<std::size_t>(reply_length[0]);
   }
 
 };

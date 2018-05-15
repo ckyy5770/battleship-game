@@ -42,7 +42,7 @@ Following are specifics of all type of messages:
 
 `REQUEST_READY (1Byte) | MESSAGE_REMAINING_BYTES (1 Byte) | CLIENT_ID (4 Byte) | SECRET_KEY (4 Byte)`
 
-`REPLY_START_GAME (1 Byte) | MESSAGE_REMAINING_BYTES (1 Byte) | SUCCEED_OR_NOT (1 Byte)`
+`REPLY_START_GAME (1 Byte) | MESSAGE_REMAINING_BYTES (1 Byte) | FIRST_FIRE_OR_NOT (1 Byte)`
 
 `REQUEST_ATTACK (1 Byte) | MESSAGE_REMAINING_BYTES (1 Byte) | CLIENT_ID (4 Byte) | SECRET_KEY (4 Byte) | LOCATION (4 Byte) | DIRECTION (1 Byte)`
 

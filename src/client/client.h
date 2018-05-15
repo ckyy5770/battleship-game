@@ -17,7 +17,8 @@ enum class ClientState{
   kStarted,
   kConnected,
   kReady,
-  kInGame,
+  kFire,
+  kWait,
   kEndGame
 };
 
@@ -46,24 +47,30 @@ public:
         }
         case ClientState::kReady:{
           // send ready message and wait game start signal from server
-          WaitGameStartSignal();
-          ChangeStateTo(ClientState::kInGame);
+          bool first_fire = WaitGameStartSignal();
+          if(first_fire){
+            ChangeStateTo(ClientState::kFire);
+          }else{
+            ChangeStateTo(ClientState::kWait);
+          }
           break;
         }
-        case ClientState::kInGame:{
-          // make one move, and wait for result,
-          // wait for enemy's move, reply with result，
-          // make another move.
+        case ClientState::kFire:{
           bool win = MakeOneMove();
           if(win) {
             Logger("client wins the game.");
             ChangeStateTo(ClientState::kEndGame);
           }
+          ChangeStateTo(ClientState::kWait);
+          break;
+        }
+        case ClientState::kWait:{
           bool lose = WaitForEnemyAndReplyWithResult();
           if(lose){
             Logger("client loses the game.");
             ChangeStateTo(ClientState::kEndGame);
           }
+          ChangeStateTo(ClientState::kFire);
           break;
         }
         case ClientState::kEndGame:{
@@ -105,8 +112,9 @@ private:
     }
   }
 
-  void WaitGameStartSignal(){
-    cli_talker_.SendReadyAndWaitStart();
+  // return first fire or not
+  bool WaitGameStartSignal(){
+    return cli_talker_.SendReadyAndWaitStart();
   }
 
   // return true if win

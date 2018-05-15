@@ -7,6 +7,9 @@
 #include <thread>
 #include <iostream>
 #include "core/networking.h"
+#include "server/server_talker_controller.h"
+#include "server/server_talker.h"
+
 
 using asio::ip::tcp;
 
