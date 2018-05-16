@@ -19,6 +19,11 @@ static const std::size_t kDestroyerNum = 4;
 typedef unsigned int ClientId;
 typedef unsigned int GameId;
 
+enum class ClientType{
+  kInitiator,
+  kListener
+};
+
 // define Directions
 enum Direction{
   kVertical,

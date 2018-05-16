@@ -12,19 +12,23 @@ using asio::ip::tcp;
 // This object will handle all network requests & response to & from the server
 class ClientTalker{
 public:
-  ClientTalker(std::string server_ip, std::size_t server_port, GameId game_id):
+  ClientTalker(const ClientType & cli_type, const std::string & peer_ip, const std::size_t & port, const ClientId & cli_id, const GameId & game_id):
     tcp_sock_(io_service_),
-    cli_id_(0),
+    cli_id_(cli_id),
     game_id_(game_id){
-      tcp::endpoint game_server(asio::ip::address::from_string(server_ip), server_port);
-      try{
-        tcp_sock_.connect(game_server);
-      }catch(std::exception& e){
-        std::cerr << "Can't connect to the server: " << e.what() << "\n";
-        assert(false);
+      switch (cli_type) {
+        case ClientType::kInitiator:{
+          ConnectToPeer(peer_ip, port);
+          break;
+        }
+        case ClientType::kListener:{
+          ListenForConnection(port);
+          break;
+        }
+        default:{
+          assert(false);
+        }
       }
-
-      ConfigClientId();
   }
 
   void JoinGame(){
@@ -127,12 +131,20 @@ private:
   // the unique game id, this should be given in cmd
   GameId game_id_;
 
-  // assign this client a unique 4 Byte id
-  // typically this should be done by applying one from server
-  // but for simplisity, we just give it a random number
-  void ConfigClientId(){
-    std::srand(std::time(nullptr));
-    cli_id_ = std::rand();
+  void ConnectToPeer(const std::string & peer_ip, const std::size_t & port){
+    tcp::endpoint peer(asio::ip::address::from_string(peer_ip), port);
+    try{
+      tcp_sock_.connect(peer);
+    }catch(std::exception& e){
+      std::cerr << "Can't connect to the server: " << e.what() << "\n";
+      assert(false);
+    }
+  }
+
+  void ListenForConnection(const std::size_t & listen_port){
+    // we only expect one connection.
+    tcp::acceptor acceptor(io_service_, tcp::endpoint(tcp::v4(), listen_port));
+    acceptor.accept(tcp_sock_);
   }
 
   std::size_t EnsureMessageTypeAndGetBodyLength(MessageType type){

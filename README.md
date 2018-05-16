@@ -6,23 +6,11 @@ implementation of classic [Battleship Game](https://en.wikipedia.org/wiki/Battle
 
 ### Overview
 
-#### Server & Client
+#### Client
 
-The server is able to host multiple games at one time.
+Client will connect directly with each other and there is no need for a central server.
 
-Before game, the server expect client to send a JOIN_GAME request with a unique key to join the game.
-
-In the game, the server only expect two commands from the client:
-
-1. place the ship (location, direction)
-
-2. attack the location
-
-The server will in turn gives two kind of responses:
-
-1. placement response (succeed or not)
-
-2. attack response (hit or not; if hit, is there any ship down?)
+Before two clients are connected, there is a difference between clients though. Some of the clients are meant to listen on specific port and wait for some of other clients to connect them. So we define two types of client: kListener and kInitiator. They will be no difference after connection is established.
 
 ##### Message Format
 

@@ -24,8 +24,8 @@ enum class ClientState{
 
 class client{
 public:
-  client(const std::string & server_ip, std::size_t port, GameId game_id):
-    cli_talker_(server_ip, port, game_id),
+  client(const ClientType & type, const std::string & peer_ip, const std::size_t & port, const ClientId & cli_id, const GameId & game_id):
+    cli_talker_(type, peer_ip, port, cli_id, game_id),
     cli_brain_(my_board_),
     state_(ClientState::kStarted){
   }
