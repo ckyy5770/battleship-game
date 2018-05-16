@@ -1,7 +1,7 @@
 // Created by Chuilian Kong April 30, 2018
 
-#ifndef CORE_IMAGINE_BOARD_H_
-#define CORE_IMAGINE_BOARD_H_
+#ifndef CORE_GAME_IMAGINE_BOARD_H_
+#define CORE_GAME_IMAGINE_BOARD_H_
 #include <iostream>
 #include <list>
 #include <utility>
@@ -74,4 +74,4 @@ private:
 };
 
 
-#endif  // CORE_IMAGINE_BOARD_H_
+#endif  // CORE_GAME_IMAGINE_BOARD_H_

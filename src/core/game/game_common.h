@@ -1,7 +1,7 @@
 // Created by Chuilian Kong May 16, 2018
 
-#ifndef CORE_GAME_COMMON_H_
-#define CORE_GAME_COMMON_H_
+#ifndef CORE_GAME_GAME_COMMON_H_
+#define CORE_GAME_GAME_COMMON_H_
 
 #include <iostream>
 #include "utils/utils.h"
@@ -63,4 +63,4 @@ std::size_t GetSizeFromType(ShipType type){
   }
 }
 
-#endif  // CORE_GAME_COMMON_H_
+#endif  // CORE_GAME_GAME_COMMON_H_

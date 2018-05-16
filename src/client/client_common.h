@@ -1,7 +1,7 @@
 // Created by Chuilian Kong May 1, 2018
 
-#ifndef CLIENT_CLIENT_H_
-#define CLIENT_CLIENT_H_
+#ifndef CLIENT_CLIENT_COMMON_H_
+#define CLIENT_CLIENT_COMMON_H_
 
 typedef unsigned int ClientId;
 typedef unsigned int GameId;
@@ -17,4 +17,4 @@ class ClientBrain;
 class GameClient;
 
 
-#endif  // CLIENT_CLIENT_H_
+#endif  // CLIENT_CLIENT_COMMON_H_

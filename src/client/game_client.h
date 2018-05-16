@@ -2,8 +2,8 @@
 // Created by Kong, Chuilian on 5/16/18.
 //
 
-#ifndef BATTLESHIP_GAME_GAME_CLIENT_H
-#define BATTLESHIP_GAME_GAME_CLIENT_H
+#ifndef BATTLESHIP_CLIENT_GAME_CLIENT_H
+#define BATTLESHIP_CLIENT_GAME_CLIENT_H
 
 #include <iostream>
 #include "client/client_common.h"
@@ -153,4 +153,4 @@ private:
 };
 
 
-#endif //BATTLESHIP_GAME_GAME_CLIENT_H
+#endif //BATTLESHIP_CLIENT_GAME_CLIENT_H
