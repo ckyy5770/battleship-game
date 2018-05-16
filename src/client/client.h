@@ -25,6 +25,7 @@ enum class ClientState{
 class client{
 public:
   client(const ClientType & type, const std::string & peer_ip, const std::size_t & port, const ClientId & cli_id, const GameId & game_id):
+    cli_type_(type),
     cli_talker_(type, peer_ip, port, cli_id, game_id),
     cli_brain_(my_board_),
     state_(ClientState::kStarted){
@@ -85,6 +86,7 @@ public:
     } // end of while loop
   }
 private:
+  const ClientType & cli_type_;
   Board my_board_;
   ClientTalker cli_talker_;
   ClientBrain cli_brain_;

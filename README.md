@@ -10,7 +10,7 @@ implementation of classic [Battleship Game](https://en.wikipedia.org/wiki/Battle
 
 Client will connect directly with each other and there is no need for a central server.
 
-Before two clients are connected, there is a difference between clients though. Some of the clients are meant to listen on specific port and wait for some of other clients to connect them. So we define two types of client: kListener and kInitiator. They will be no difference after connection is established.
+There is a difference between clients though. Some of the clients are meant to listen on specific port and wait for some of other clients to connect them. So we define two types of client: kListener and kInitiator. In the following conversations, the kInitiator will talk first all the time.
 
 ##### Message Format
 
