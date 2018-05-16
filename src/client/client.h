@@ -49,8 +49,11 @@ public:
           break;
         }
         case ClientState::kReady:{
-          // send ready message and wait game start signal from server
-          bool first_fire = WaitGameStartSignal();
+          // wait for both clients are ready and roll a dice to decide
+          // who shoot first
+          Ready();
+          bool first_fire = DecideWhoFireFirst();
+
           if(first_fire){
             ChangeStateTo(ClientState::kFire);
           }else{
@@ -111,18 +114,20 @@ private:
   void PlaceShips(){
     std::vector<ShipPlacementInfo> plan = cli_brain_.GenerateShipPlacingPlan(StrategyPlaceShip::kFixed);
     for(auto placement : plan){
-      if(cli_talker_.PlaceAShip(placement.type, placement.head_location, placement.direction)){
-        my_board_.PlaceAShip(placement.type, placement.head_location, placement.direction);
-      }else{
-        Logger("place ship fail");
-        assert(false);
-      }
+      // TODO place ship may fail, but only if the brain generated a faulty plan
+      // brain should be responsible for the error-free placement plan.
+      bool success = my_board_.PlaceAShip(placement.type, placement.head_location, placement.direction);
+      assert(success);
     }
   }
 
-  // return first fire or not
-  bool WaitGameStartSignal(){
-    return cli_talker_.SendReadyAndWaitStart();
+  // this function returns when both clients are ready
+  void Ready(){
+    cli_talker_.SendMyReadyAndWaitTheOther();
+  }
+
+  bool DecideWhoFireFirst(){
+    return cli_talker_.DecideWhoFireFirst();
   }
 
   // return true if win

@@ -52,6 +52,10 @@ Following are specifics of all type of messages:
 
 `INFO_GAME_ID (1 Byte) | MESSAGE_REMAINING_BYTES (1 Byte) | CLIENT_ID (4 Byte) | GAME_ID (4 Byte)`
 
+`INFO_READY (1Byte) | MESSAGE_REMAINING_BYTES (1 Byte) | CLIENT_ID (4 Byte) | GAME_ID (4 Byte)`
+
+`INFO_ROLL (1Byte) | MESSAGE_REMAINING_BYTES (1 Byte) | CLIENT_ID (4 Byte) | GAME_ID (4 Byte) | RANDOM_NUMBER (4 Byte)`
+
 
 
 ### Classes

@@ -23,6 +23,8 @@ enum class MessageType : unsigned char {
   kReplyAttack,
 
   kInfoGameId,
+  kInfoReady,
+  kInfoRoll
 };
 
 // write type to the byte array
@@ -314,6 +316,15 @@ static void ResolveReplyAttack(unsigned char* buffer, std::size_t length, bool* 
 }
 
 
+
+
+
+
+
+
+
+
+
 static void MakeInfoGameId(unsigned char* buffer, std::size_t* length, ClientId cli_id, GameId game_id){
   // INFO_GAME_ID (1 Byte) | MESSAGE_REMAINING_BYTES (1 Byte) | CLIENT_ID (4 Byte) | GAME_ID (4 Byte)
   std::size_t offset = 0;
@@ -343,5 +354,65 @@ static void ResolveInfoGameId(unsigned char* buffer, std::size_t length, ClientI
 }
 
 
+static void MakeInfoReady(unsigned char* buffer, std::size_t* length, ClientId cli_id, GameId game_id){
+  // INFO_READY (1 Byte) | MESSAGE_REMAINING_BYTES (1 Byte) | CLIENT_ID (4 Byte) | GAME_ID (4 Byte)
+  std::size_t offset = 0;
+  buffer[offset] = static_cast<unsigned char>(MessageType::kInfoReady);
+
+  // request[1] is reserved for REMAINING_BYTES
+  offset += 2;
+
+  WriteToByteArray<ClientId>(buffer, offset, cli_id);
+  offset += sizeof(ClientId);
+  WriteToByteArray<GameId>(buffer, offset, game_id);
+  offset += sizeof(GameId);
+  // REMAINING_BYTES
+  buffer[1] = static_cast<unsigned char>(offset - 2);
+
+  *length = offset;
+  assert(*length <= kMaxBufferLength);
+}
+
+static void ResolveInfoReady(unsigned char* buffer, std::size_t length, ClientId* cli_id, GameId* game_id){
+  // CLIENT_ID (4 Byte) | GAME_ID (4 Byte)
+  assert(length <= kMaxBufferLength);
+  std::size_t offset = 0;
+  ReadFromByteArray<ClientId>(buffer, offset, cli_id);
+  offset += sizeof(ClientId);
+  ReadFromByteArray<GameId>(buffer, offset, game_id);
+}
+
+
+static void MakeInfoRoll(unsigned char* buffer, std::size_t* length, ClientId cli_id, GameId game_id, unsigned long roll_number){
+  // INFO_READY (1 Byte) | MESSAGE_REMAINING_BYTES (1 Byte) | CLIENT_ID (4 Byte) | GAME_ID (4 Byte) | ROLL_NUMBER (4 Byte)
+  std::size_t offset = 0;
+  buffer[offset] = static_cast<unsigned char>(MessageType::kInfoReady);
+
+  // request[1] is reserved for REMAINING_BYTES
+  offset += 2;
+
+  WriteToByteArray<ClientId>(buffer, offset, cli_id);
+  offset += sizeof(ClientId);
+  WriteToByteArray<GameId>(buffer, offset, game_id);
+  offset += sizeof(GameId);
+  WriteToByteArray<unsigned long>(buffer, offset, roll_number);
+  offset += sizeof(unsigned long);
+  // REMAINING_BYTES
+  buffer[1] = static_cast<unsigned char>(offset - 2);
+
+  *length = offset;
+  assert(*length <= kMaxBufferLength);
+}
+
+static void ResolveInfoRoll(unsigned char* buffer, std::size_t length, ClientId* cli_id, GameId* game_id, unsigned long* roll_number){
+  // CLIENT_ID (4 Byte) | GAME_ID (4 Byte) | ROLL_NUMBER (4 Byte)
+  assert(length <= kMaxBufferLength);
+  std::size_t offset = 0;
+  ReadFromByteArray<ClientId>(buffer, offset, cli_id);
+  offset += sizeof(ClientId);
+  ReadFromByteArray<GameId>(buffer, offset, game_id);
+  offset += sizeof(GameId);
+  ReadFromByteArray<unsigned long>(buffer, offset, roll_number);
+}
 
 #endif  // CORE_NETWORKING_H_

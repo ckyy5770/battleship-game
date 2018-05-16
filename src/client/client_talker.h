@@ -81,9 +81,51 @@ public:
     ClientId cli_id;
     GameId game_id;
     ResolveInfoGameId(buffer, length, &cli_id, &game_id);
+    // TODO: maybe we don't need cli_id
     return game_id;
   }
 
+  void SendMyReadyAndWaitTheOther(){
+    unsigned char buffer[kMaxBufferLength];
+    std::size_t message_length = 0;
+    MakeInfoReady(buffer, &message_length, cli_id_, game_id_);
+    asio::write(tcp_sock_, asio::buffer(buffer, message_length));
+
+    std::size_t length = EnsureMessageTypeAndGetBodyLength(MessageType::kInfoReady);
+    asio::read(tcp_sock_, asio::buffer(buffer, length));
+    ClientId cli_id;
+    GameId game_id;
+    ResolveInfoReady(buffer, length, &cli_id, &game_id);
+    // TODO: maybe we don't need cli_id and game_id?
+    // or maybe we can add a verification here.
+  }
+
+  bool DecideWhoFireFirst(){
+    // TODO for now we use cli_id to decide which one should fire first.
+    unsigned long my_num = cli_id_;
+
+    unsigned char buffer[kMaxBufferLength];
+    std::size_t message_length = 0;
+    MakeInfoRoll(buffer, &message_length, cli_id_, game_id_, my_num);
+    asio::write(tcp_sock_, asio::buffer(buffer, message_length));
+
+    std::size_t length = EnsureMessageTypeAndGetBodyLength(MessageType::kInfoRoll);
+    asio::read(tcp_sock_, asio::buffer(buffer, length));
+    ClientId cli_id;
+    GameId game_id;
+    unsigned long oppo_num;
+    ResolveInfoRoll(buffer, length, &cli_id, &game_id, &oppo_num);
+
+    // TODO only for now
+    assert(my_num != oppo_num);
+
+    return my_num > oppo_num;
+  }
+
+
+
+
+  // TODO deprecated for now:
   // return first fire or not
   bool SendReadyAndWaitStart(){
     // notify server this client is ready.
