@@ -2,8 +2,51 @@
 // Created by Kong, Chuilian on 5/16/18.
 //
 
+#include "tclap/CmdLine.h"
 #include "client/game_client.h"
 
-int main(int argc, char** argv){
+void ParseArgs(const int argc, const char** argv, ClientType* type, std::string* peer_ip, size_t* port, unsigned* client_id, unsigned* game_id){
+  try{
+    TCLAP::CmdLine cmd("battleship game client", ' ', "1.0");
 
+    TCLAP::ValueArg<std::string> typeArg("t", "type", "client type: initiator or listener, lower case", true, "not a type", "string");
+    TCLAP::ValueArg<std::string> ipArg("a", "ip", "peer ip address", true, "127.0.0.1", "string");
+    TCLAP::ValueArg<std::size_t> portArg("p", "port", "peer port", true, 0, "size_t");
+    TCLAP::ValueArg<unsigned> idArg("i", "id", "client id", true, 0, "unsigned");
+    TCLAP::ValueArg<unsigned> gameArg("g", "game", "game id", true, 0, "unsigned");
+
+    cmd.add(typeArg);
+    cmd.add(ipArg);
+    cmd.add(portArg);
+    cmd.add(idArg);
+    cmd.add(gameArg);
+
+    // Parse the argv array.
+    cmd.parse(argc, argv);
+
+    // Get the value parsed by each arg.
+    *type = typeArg.getValue() == "initiator" ? ClientType::kInitiator : ClientType::kListener;
+    *peer_ip = ipArg.getValue();
+    *port = portArg.getValue();
+    *client_id = idArg.getValue();
+    *game_id = gameArg.getValue();
+
+  } catch (TCLAP::ArgException &e){
+    std::cerr << "error: " << e.error() << " for arg " << e.argId() << std::endl;
+  }
+
+}
+
+int main(const int argc, const char** argv){
+  ClientType type;
+  std::string peer_ip;
+  size_t port;
+  unsigned client_id;
+  unsigned game_id;
+
+  ParseArgs(argc, argv, &type, &peer_ip, &port, &client_id, &game_id);
+
+  GameClient client(type, peer_ip, port, client_id, game_id);
+
+  client.run();
 }

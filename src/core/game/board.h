@@ -10,6 +10,7 @@
 #include "utils/utils.h"
 #include "core/game/ship.h"
 #include "core/game/game_common.h"
+#include "core/exception/exception.h"
 
 class Board{
 public:
@@ -77,7 +78,7 @@ public:
     // we prohibit player to attack the same spot multiple times
     // it will throw a exception
     if(states_[location] & ATTACKED){
-      throw kLocationAlreadyAttacked;
+      throw GameException::kLocationAlreadyAttacked;
     }
 
     if(states_[location] & OCCUPIED){

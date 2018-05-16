@@ -8,6 +8,8 @@
 #include <random>
 #include <ctime>
 #include "core/game/game_common.h"
+#include "core/game/board.h"
+#include "core/game/imagine_board.h"
 #include "client/client_talker.h"
 
 enum class StrategyPlaceShip{
