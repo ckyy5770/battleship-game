@@ -31,45 +31,6 @@ public:
       }
   }
 
-  // TODO deprecated for now:
-  // the client do not need to send a JoinGame request
-  void JoinGame(){
-    unsigned char request[kMaxBufferLength];
-    std::size_t request_length = 0;
-    MakeRequestJoinGame(request, &request_length, cli_id_, game_id_);
-    asio::write(tcp_sock_, asio::buffer(request, request_length));
-
-    std::size_t length = EnsureMessageTypeAndGetBodyLength(MessageType::kReplyJoinGame);
-    unsigned char reply_body[kMaxBufferLength];
-    asio::read(tcp_sock_, asio::buffer(reply_body, length));
-    bool success = false;
-    ResolveReplyJoinGame(reply_body, length, &success);
-
-    if(!success){
-      Logger("join game fail");
-      assert(false);
-    }
-  }
-
-  // TODO deprecated for now:
-  // the client do not need to send a place ship request
-  // they do it locally
-  bool PlaceAShip(ShipType type, std::size_t head_location, Direction direction){
-    // send place ship request to server, and get reply
-    unsigned char request[kMaxBufferLength];
-    std::size_t request_length = 0;
-    MakeRequestPlaceAShip(request, &request_length, cli_id_, game_id_, type, head_location, direction);
-    asio::write(tcp_sock_, asio::buffer(request, request_length));
-
-    std::size_t length = EnsureMessageTypeAndGetBodyLength(MessageType::kReplyPlaceAShip);
-    unsigned char reply_body[kMaxBufferLength];
-    asio::read(tcp_sock_, asio::buffer(reply_body, length));
-    bool success = false;
-    ResolveReplyPlaceAShip(reply_body, length, &success);
-
-    return success;
-  }
-
   GameId SendMyGameIdAndGetTheOther(){
     unsigned char buffer[kMaxBufferLength];
     std::size_t message_length = 0;
@@ -122,31 +83,8 @@ public:
     return my_num > oppo_num;
   }
 
-
-
-
-  // TODO deprecated for now:
-  // return first fire or not
-  bool SendReadyAndWaitStart(){
-    // notify server this client is ready.
-    // wait for game start signal
-    unsigned char request[kMaxBufferLength];
-    std::size_t request_length = 0;
-    MakeRequestReady(request, &request_length, cli_id_, game_id_);
-    asio::write(tcp_sock_, asio::buffer(request, request_length));
-
-    std::size_t length = EnsureMessageTypeAndGetBodyLength(MessageType::kReplyStartGame);
-    unsigned char reply_body[kMaxBufferLength];
-    asio::read(tcp_sock_, asio::buffer(reply_body, length));
-    bool first_fire = false;
-    ResolveReplyStartGame(reply_body, length, &first_fire);
-
-    return first_fire;
-
-  }
-
   AttackResult Attack(size_t location){
-    // send attack request to server, and get reply
+    // send attack request to peer, and get reply
     unsigned char request[kMaxBufferLength];
     std::size_t request_length = 0;
     MakeRequestAttack(request, &request_length, cli_id_, game_id_, location);
@@ -176,7 +114,7 @@ public:
   }
 
   void SendAttackResult(bool success, ShipType type, bool attacker_win){
-    // send attack reply to server
+    // send attack reply to peer
     unsigned char reply[kMaxBufferLength];
     std::size_t reply_length = 0;
     MakeReplyAttack(reply, &reply_length, success, type, attacker_win);
