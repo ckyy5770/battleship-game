@@ -49,6 +49,8 @@ public:
     }
   }
 
+  // TODO deprecated for now:
+  // the client do not need to 
   bool PlaceAShip(ShipType type, std::size_t head_location, Direction direction){
     // send place ship request to server, and get reply
     unsigned char request[kMaxBufferLength];
