@@ -59,7 +59,7 @@ static void ResolveRequestAttack(unsigned char* buffer, std::size_t length, Clie
 }
 
 static void MakeReplyAttack(unsigned char* buffer, std::size_t* length, bool success, ShipType type, bool attacker_win){
-  // REPLY_ATTACK (1 Byte) | MESSAGE_REMAINING_BYTES (1 Byte) | SUCCEED_OR_NOT (1 Byte) | SINK_SHIP_TYPE_DURING_ATTACK (1 Byte)
+  // REPLY_ATTACK (1 Byte) | MESSAGE_REMAINING_BYTES (1 Byte) | SUCCEED_OR_NOT (1 Byte) | SINK_SHIP_TYPE_DURING_ATTACK (1 Byte) | ATTACKER_WIN_OR_NOT (1 Byte)
   std::size_t offset = 0;
   buffer[offset] = static_cast<unsigned char>(MessageType::kReplyAttack);
 
