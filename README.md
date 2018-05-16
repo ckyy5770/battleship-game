@@ -10,7 +10,20 @@ implementation of classic [Battleship Game](https://en.wikipedia.org/wiki/Battle
 
 Client will connect directly with each other and there is no need for a central server.
 
-There is a difference between clients though. Some of the clients are meant to listen on specific port and wait for some of other clients to connect them. So we define two types of client: kListener and kInitiator. In the following conversations, the kInitiator will talk first all the time.
+There is a difference between clients though. Some of the clients are meant to listen on specific port and wait for some of other clients to connect them. So we define two types of client: kListener and kInitiator. ~~In the following conversations, the kInitiator will talk first all the time.~~
+
+After connection established,
+
+1. both clients will send a INFO_GAME_ID to each other and try to verify if they have the same game id.
+
+2. after that, the client will place its ships locally and send a INFO_READY when finishing up.
+
+3. then they will try to read from the socket and expecting a INFO_READY from the other side.
+
+4. upon receiving the ready signal from the other, they will send a INFO_ROLL with a random number from 0 to 99 to decide which one should attack first. (higher one attack first, and if the numbers are equal, re-roll and send again).
+
+5. TODO
+
 
 ##### Message Format
 
@@ -35,6 +48,10 @@ Following are specifics of all type of messages:
 `REQUEST_ATTACK (1 Byte) | MESSAGE_REMAINING_BYTES (1 Byte) | CLIENT_ID (4 Byte) | SECRET_KEY (4 Byte) | LOCATION (4 Byte) | DIRECTION (1 Byte)`
 
 `REPLY_ATTACK (1 Byte) | MESSAGE_REMAINING_BYTES (1 Byte) | SUCCEED_OR_NOT (1 Byte) | SINK_SHIP_TYPE_DURING_ATTACK (1 Byte)`
+
+
+`INFO_GAME_ID (1 Byte) | MESSAGE_REMAINING_BYTES (1 Byte) | CLIENT_ID (4 Byte) | GAME_ID (4 Byte)`
+
 
 
 ### Classes

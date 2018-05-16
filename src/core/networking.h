@@ -20,7 +20,9 @@ enum class MessageType : unsigned char {
   kReplyJoinGame,
   kReplyPlaceAShip,
   kReplyStartGame,
-  kReplyAttack
+  kReplyAttack,
+
+  kInfoGameId,
 };
 
 // write type to the byte array
@@ -309,6 +311,35 @@ static void ResolveReplyAttack(unsigned char* buffer, std::size_t length, bool* 
   ReadFromByteArray<ShipType>(buffer, offset, type);
   offset += sizeof(ShipType);
   ReadFromByteArray<bool>(buffer, offset, attacker_win);
+}
+
+
+static void MakeInfoGameId(unsigned char* buffer, std::size_t* length, ClientId cli_id, GameId game_id){
+  // INFO_GAME_ID (1 Byte) | MESSAGE_REMAINING_BYTES (1 Byte) | CLIENT_ID (4 Byte) | GAME_ID (4 Byte)
+  std::size_t offset = 0;
+  buffer[offset] = static_cast<unsigned char>(MessageType::kInfoGameId);
+
+  // request[1] is reserved for REMAINING_BYTES
+  offset += 2;
+
+  WriteToByteArray<ClientId>(buffer, offset, cli_id);
+  offset += sizeof(ClientId);
+  WriteToByteArray<GameId>(buffer, offset, game_id);
+  offset += sizeof(GameId);
+  // REMAINING_BYTES
+  buffer[1] = static_cast<unsigned char>(offset - 2);
+
+  *length = offset;
+  assert(*length <= kMaxBufferLength);
+}
+
+static void ResolveInfoGameId(unsigned char* buffer, std::size_t length, ClientId* cli_id, GameId* game_id){
+  // CLIENT_ID (4 Byte) | GAME_ID (4 Byte)
+  assert(length <= kMaxBufferLength);
+  std::size_t offset = 0;
+  ReadFromByteArray<ClientId>(buffer, offset, cli_id);
+  offset += sizeof(ClientId);
+  ReadFromByteArray<GameId>(buffer, offset, game_id);
 }
 
 

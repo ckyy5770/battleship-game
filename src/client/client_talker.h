@@ -31,6 +31,8 @@ public:
       }
   }
 
+  // TODO deprecated for now:
+  // the client do not need to send a JoinGame request
   void JoinGame(){
     unsigned char request[kMaxBufferLength];
     std::size_t request_length = 0;
@@ -50,7 +52,8 @@ public:
   }
 
   // TODO deprecated for now:
-  // the client do not need to 
+  // the client do not need to send a place ship request
+  // they do it locally
   bool PlaceAShip(ShipType type, std::size_t head_location, Direction direction){
     // send place ship request to server, and get reply
     unsigned char request[kMaxBufferLength];
@@ -65,6 +68,20 @@ public:
     ResolveReplyPlaceAShip(reply_body, length, &success);
 
     return success;
+  }
+
+  GameId SendMyGameIdAndGetTheOther(){
+    unsigned char buffer[kMaxBufferLength];
+    std::size_t message_length = 0;
+    MakeInfoGameId(buffer, &message_length, cli_id_, game_id_);
+    asio::write(tcp_sock_, asio::buffer(buffer, message_length));
+
+    std::size_t length = EnsureMessageTypeAndGetBodyLength(MessageType::kInfoGameId);
+    asio::read(tcp_sock_, asio::buffer(buffer, length));
+    ClientId cli_id;
+    GameId game_id;
+    ResolveInfoGameId(buffer, length, &cli_id, &game_id);
+    return game_id;
   }
 
   // return first fire or not

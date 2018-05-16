@@ -26,6 +26,8 @@ class client{
 public:
   client(const ClientType & type, const std::string & peer_ip, const std::size_t & port, const ClientId & cli_id, const GameId & game_id):
     cli_type_(type),
+    cli_id_(cli_id),
+    game_id_(game_id),
     cli_talker_(type, peer_ip, port, cli_id, game_id),
     cli_brain_(my_board_),
     state_(ClientState::kStarted){
@@ -35,8 +37,8 @@ public:
     while(true){
       switch (state_) {
         case ClientState::kStarted:{
-          // conncet to the game room
-          ConnectToGame();
+          // verify game id.
+          VerifyGameId();
           ChangeStateTo(ClientState::kConnected);
           break;
         }
@@ -87,6 +89,9 @@ public:
   }
 private:
   const ClientType & cli_type_;
+  const ClientId & cli_id_;
+  const GameId & game_id_;
+
   Board my_board_;
   ClientTalker cli_talker_;
   ClientBrain cli_brain_;
@@ -98,8 +103,9 @@ private:
     state_ = new_state;
   }
 
-  void ConnectToGame(){
-    cli_talker_.JoinGame();
+
+  void VerifyGameId(){
+    assert(game_id_ == cli_talker_.SendMyGameIdAndGetTheOther());
   }
 
   void PlaceShips(){
