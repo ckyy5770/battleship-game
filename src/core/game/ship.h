@@ -5,6 +5,7 @@
 
 #include <iostream>
 #include "utils/utils.h"
+#include "core/game/game_common.h"
 
 class Ship{
 public:

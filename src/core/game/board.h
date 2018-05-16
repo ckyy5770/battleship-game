@@ -9,6 +9,7 @@
 #include <cstring>
 #include "utils/utils.h"
 #include "core/game/ship.h"
+#include "core/game/game_common.h"
 
 class Board{
 public:

@@ -7,9 +7,7 @@
 #include <algorithm>
 #include <random>
 #include <ctime>
-#include "core/game/board.h"
-#include "core/game/imagine_board.h"
-#include "core/game/ship.h"
+#include "core/game/game_common.h"
 #include "client/client_talker.h"
 
 enum class StrategyPlaceShip{
@@ -87,16 +85,16 @@ private:
   // ship placement strategies
   std::vector<ShipPlacementInfo> GenerateShipPlacingPlanFixed(){
     std::vector<ShipPlacementInfo> ret;
-    ret.push_back(ShipPlacementInfo(ShipType::kCarrier, 0, Direction::kVertical));
-    ret.push_back(ShipPlacementInfo(ShipType::kBattleShip, 1, Direction::kVertical));
-    ret.push_back(ShipPlacementInfo(ShipType::kBattleShip, 2, Direction::kVertical));
-    ret.push_back(ShipPlacementInfo(ShipType::kCruiser, 3, Direction::kVertical));
-    ret.push_back(ShipPlacementInfo(ShipType::kCruiser, 4, Direction::kVertical));
-    ret.push_back(ShipPlacementInfo(ShipType::kCruiser, 5, Direction::kVertical));
-    ret.push_back(ShipPlacementInfo(ShipType::kDestroyer, 6, Direction::kVertical));
-    ret.push_back(ShipPlacementInfo(ShipType::kDestroyer, 7, Direction::kVertical));
-    ret.push_back(ShipPlacementInfo(ShipType::kDestroyer, 8, Direction::kVertical));
-    ret.push_back(ShipPlacementInfo(ShipType::kDestroyer, 9, Direction::kVertical));
+    ret.emplace_back(ShipPlacementInfo(ShipType::kCarrier, 0, Direction::kVertical));
+    ret.emplace_back(ShipPlacementInfo(ShipType::kBattleShip, 1, Direction::kVertical));
+    ret.emplace_back(ShipPlacementInfo(ShipType::kBattleShip, 2, Direction::kVertical));
+    ret.emplace_back(ShipPlacementInfo(ShipType::kCruiser, 3, Direction::kVertical));
+    ret.emplace_back(ShipPlacementInfo(ShipType::kCruiser, 4, Direction::kVertical));
+    ret.emplace_back(ShipPlacementInfo(ShipType::kCruiser, 5, Direction::kVertical));
+    ret.emplace_back(ShipPlacementInfo(ShipType::kDestroyer, 6, Direction::kVertical));
+    ret.emplace_back(ShipPlacementInfo(ShipType::kDestroyer, 7, Direction::kVertical));
+    ret.emplace_back(ShipPlacementInfo(ShipType::kDestroyer, 8, Direction::kVertical));
+    ret.emplace_back(ShipPlacementInfo(ShipType::kDestroyer, 9, Direction::kVertical));
 
     return ret;
   }

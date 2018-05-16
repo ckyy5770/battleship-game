@@ -5,6 +5,8 @@
 
 #include "utils/utils.h"
 #include "core/networking/serialization.h"
+#include "client/client_common.h"
+#include "core/game/game_common.h"
 
 using namespace serialization;
 

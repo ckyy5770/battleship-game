@@ -5,8 +5,10 @@
 
 #include <iostream>
 #include <string>
+#include "core/game/game_common.h"
 #include "core/networking/networking.h"
-#include "utils/utils.h"
+#include "client/client_common.h"
+
 using asio::ip::tcp;
 
 // This object will handle all network requests & response to & from the server
