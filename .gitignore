@@ -1,6 +1,8 @@
 # the build, lib dir
 build/
 lib/
+cmake-build-debug/
+.idea/
 
 # util scripts
 /include_guard_writer.py
