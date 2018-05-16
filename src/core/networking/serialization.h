@@ -1,7 +1,7 @@
-// Created by Chuilian Kong April 30, 2018
+// Created by Chuilian Kong May 16, 2018
 
-#ifndef CORE_SERIALIZATION_H
-#define CORE_SERIALIZATION_H
+#ifndef CORE_NETWORKING_SERIALIZATION_H_
+#define CORE_NETWORKING_SERIALIZATION_H_
 
 #include <cstring>
 
@@ -61,4 +61,4 @@ namespace serialization{
   }
 }
 
-#endif  // CORE_SERIALIZATION_H
+#endif  // CORE_NETWORKING_SERIALIZATION_H_

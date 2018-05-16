@@ -7,9 +7,9 @@
 #include <algorithm>
 #include <random>
 #include <ctime>
-#include "core/board.h"
-#include "core/imagine_board.h"
-#include "core/ship.h"
+#include "core/game/board.h"
+#include "core/game/imagine_board.h"
+#include "core/game/ship.h"
 #include "client/client_talker.h"
 
 enum class StrategyPlaceShip{

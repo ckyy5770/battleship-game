@@ -5,7 +5,7 @@
 
 #include <iostream>
 #include <string>
-#include "core/networking.h"
+#include "core/networking/networking.h"
 #include "utils/utils.h"
 using asio::ip::tcp;
 

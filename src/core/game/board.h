@@ -1,14 +1,14 @@
 // Created by Chuilian Kong April 30, 2018
 
-#ifndef CORE_BOARD_H_
-#define CORE_BOARD_H_
+#ifndef CORE_GAME_BOARD_H_
+#define CORE_GAME_BOARD_H_
 
 #include <iostream>
 #include <list>
 #include <utility>
 #include <cstring>
 #include "utils/utils.h"
-#include "ship.h"
+#include "core/game/ship.h"
 
 class Board{
 public:
@@ -213,4 +213,4 @@ private:
 
 
 
-#endif  // CORE_BOARD_H_
+#endif  // CORE_GAME_BOARD_H_

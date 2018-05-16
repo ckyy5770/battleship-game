@@ -1,10 +1,10 @@
 // Created by Chuilian Kong May 16, 2018
 
-#ifndef CORE_MESSAGES_H_
-#define CORE_MESSAGES_H_
+#ifndef CORE_NETWORKING_MESSAGES_H_
+#define CORE_NETWORKING_MESSAGES_H_
 
 #include "utils/utils.h"
-#include "core/serialization.h"
+#include "core/networking/serialization.h"
 
 using namespace serialization;
 
@@ -178,4 +178,4 @@ static void ResolveInfoRoll(unsigned char* buffer, std::size_t length, ClientId*
   offset += sizeof(GameId);
   ReadFromByteArray<unsigned long>(buffer, offset, roll_number);
 }
-#endif  // CORE_MESSAGES_H_
+#endif  // CORE_NETWORKING_MESSAGES_H_
