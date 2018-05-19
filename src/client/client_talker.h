@@ -160,6 +160,8 @@ private:
     asio::read(tcp_sock_, asio::buffer(reply_length, 1));
     assert(static_cast<std::size_t>(reply_length[0]) < kMaxBufferLength);
 
+    Logger("Message Received. type = " + MessageTypeToString(type));
+
     return static_cast<std::size_t>(reply_length[0]);
   }
 

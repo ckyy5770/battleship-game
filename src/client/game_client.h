@@ -21,6 +21,32 @@ enum class ClientState {
   kEndGame
 };
 
+static std::string ClientStateToString(const ClientState state){
+  switch(state){
+    case ClientState::kStarted:{
+      return "kStarted";
+    }
+    case ClientState::kConnected:{
+      return "kConnected";
+    }
+    case ClientState::kReady:{
+      return "kReady";
+    }
+    case ClientState::kFire:{
+      return "kFire";
+    }
+    case ClientState::kWait:{
+      return "kWait";
+    }
+    case ClientState::kEndGame:{
+      return "kEndGame";
+    }
+    default:{
+      return "UnknownState";
+    }
+  }
+}
+
 class GameClient {
 public:
   GameClient(const ClientType &type, const std::string &peer_ip, const std::size_t &port, const ClientId &cli_id,
@@ -104,6 +130,7 @@ private:
   ClientState state_;
 
   void ChangeStateTo(ClientState new_state) {
+    Logger(ClientStateToString(state_) + " change to " + ClientStateToString(new_state));
     state_ = new_state;
   }
 

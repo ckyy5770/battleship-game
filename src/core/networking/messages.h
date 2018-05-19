@@ -20,6 +20,29 @@ enum class MessageType : unsigned char {
   kInfoRoll
 };
 
+static std::string MessageTypeToString(const MessageType type){
+  switch(type){
+    case MessageType::kRequestAttack:{
+      return "kRequestAttack";
+    }
+    case MessageType::kReplyAttack:{
+      return "kReplyAttack";
+    }
+    case MessageType::kInfoGameId:{
+      return "kInfoGameId";
+    }
+    case MessageType::kInfoReady:{
+      return "kInfoReady";
+    }
+    case MessageType::kInfoRoll:{
+      return "kInfoRoll";
+    }
+    default:{
+      return "UnknownType";
+    }
+  }
+}
+
 // ******************************************************************
 // functions for serializing and deserializing messages
 // ******************************************************************
@@ -152,7 +175,7 @@ static void ResolveInfoReady(unsigned char* buffer, std::size_t length, ClientId
 static void MakeInfoRoll(unsigned char* buffer, std::size_t* length, ClientId cli_id, GameId game_id, unsigned long roll_number){
   // INFO_READY (1 Byte) | MESSAGE_REMAINING_BYTES (1 Byte) | CLIENT_ID (4 Byte) | GAME_ID (4 Byte) | ROLL_NUMBER (4 Byte)
   std::size_t offset = 0;
-  buffer[offset] = static_cast<unsigned char>(MessageType::kInfoReady);
+  buffer[offset] = static_cast<unsigned char>(MessageType::kInfoRoll);
 
   // request[1] is reserved for REMAINING_BYTES
   offset += 2;

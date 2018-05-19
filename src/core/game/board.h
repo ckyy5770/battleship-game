@@ -39,7 +39,7 @@ public:
     switch(direction){
       case kVertical:{
         // since we checked
-        assert(row + size - 1 >= kDim);
+        assert(row + size - 1 < kDim);
         // turn on OCCUPIED flag, connect the occupied location and the corresponding ship via pointer
         for(std::size_t i = 0; i < size; i++){
           states_[head_location + i * kDim] |= OCCUPIED;
@@ -49,7 +49,7 @@ public:
       }
       case kHorisontal:{
         // since we checked
-        assert(col + size - 1 >= kDim);
+        assert(col + size - 1 < kDim);
         // turn on OCCUPIED flag, connect the occupied location and the corresponding ship via pointer
         for(std::size_t i = 0; i < size; i++){
           states_[head_location + i] |= OCCUPIED;
