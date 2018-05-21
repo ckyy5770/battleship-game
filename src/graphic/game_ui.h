@@ -80,8 +80,7 @@ private:
   void RenderGameUi(){
     ClearCanvas();
     RenderMyBoard();
-
-    RenderRectangleWithShade(300, 300, 200, 100);
+    RenderEnemyBoard();
   }
 
 
@@ -89,6 +88,36 @@ private:
     glClearColor ( 1.0f, 1.0f, 1.0f, 1.0f );
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   }
+
+  void RenderEnemyBoard(){
+    glColor3f(0.0, 0.0, 0.0);
+    glLineWidth(kBoardLineWidth);
+    float center_x = kWindowWidth / 4 * 3;
+    float center_y = kWindowHeight / 2;
+    float width = kWindowHeight - kWindowMargin;
+    RenderBoardBase(center_x, center_y, width);
+    RenderStatesEnemyBoard(center_x, center_y, width);
+  }
+
+  void RenderStatesEnemyBoard(float board_center_x, float board_center_y, float board_width){
+    for(size_t i = 0; i < kDim * kDim; i++){
+      size_t row = i / kDim;
+      size_t col = i % kDim;
+      const unsigned char & state = ref_enemy_board_.states_[i];
+      RenderOneStateEnemyBoard(state, ColToCenterX(col, board_center_x, board_width), RowToCenterY(row, board_center_y, board_width));
+    }
+  }
+
+  void RenderOneStateEnemyBoard(unsigned char state, float center_x, float center_y){
+    if(state & Board::OCCUPIED){
+      RenderString(std::string().append(1, 'o'),center_x + x_offet_for_better_display_, center_y, 1);
+    }else if(state & Board::ATTACKED){
+      // only if not occupied, then we check if attacked
+      // because if a location in enemy board is occupied, it must be attacked.
+      RenderString(std::string().append(1, 'x'),center_x + x_offet_for_better_display_, center_y, 1);
+    }
+  }
+
 
   void RenderMyBoard(){
     glColor3f(0.0, 0.0, 0.0);
@@ -104,24 +133,32 @@ private:
 
   void RenderShipsMyBoard(float board_center_x, float board_center_y, float board_width){
     for(Ship ship : ref_my_board_.on_board_ships_){
-      ship.GetHeadLoaction();
+      RenderShip(ship.GetType(), ship.GetHeadLoaction(), ship.GetDirection(), board_center_x, board_center_y, board_width);
     }
   }
 
-  void RenderShip(ShipType  type, size_t head_location, Direction direction, float board_center_x, float board_center_y, float board_width){
-    size_t size = GetSizeFromType(type);
+  // TODO: width_per_square can be a data member to avoid repeated computation
+  void RenderShip(ShipType type, size_t head_location, Direction direction, float board_center_x, float board_center_y, float board_width){
+    float width_per_square = board_width / kBoardDim;
+    size_t ship_size = GetSizeFromType(type);
     size_t row = head_location / kDim;
     size_t col = head_location % kDim;
+    float ship_margin = width_per_square / 7;
     switch(direction){
       case Direction::kHorisontal:{
-
+        float rec_center_y = RowToCenterY(row, board_center_y, board_width);
+        float rec_center_x = ColToCenterX(col, board_center_x, board_width) + (ship_size - 1) * width_per_square / 2;
+        RenderRectangleWithShade(rec_center_x, rec_center_y, ship_size * width_per_square - ship_margin, width_per_square - ship_margin);
         break;
       }
       case Direction ::kVertical:{
+        float rec_center_x = ColToCenterX(col, board_center_x, board_width);
+        float rec_center_y = RowToCenterY(row, board_center_y, board_width) - (ship_size - 1) * width_per_square / 2;
+        RenderRectangleWithShade(rec_center_x, rec_center_y, width_per_square - ship_margin, ship_size * width_per_square - ship_margin);
         break;
       }
       default:{
-        Logger("can not render kNotAShip");
+        Logger("can not render kUndefined Direction");
         assert(false);
       }
     }
@@ -165,7 +202,7 @@ private:
       size_t row = i / kDim;
       size_t col = i % kDim;
       const unsigned char & state = ref_my_board_.states_[i];
-      RenderState(state, ColToCenterX(col, board_center_x, board_width), RowToCenterY(row, board_center_y, board_width));
+      RenderOneStateMyBoard(state, ColToCenterX(col, board_center_x, board_width), RowToCenterY(row, board_center_y, board_width));
     }
   }
 
@@ -181,15 +218,11 @@ private:
     return center_left_x + (col + 1) * width_per_square;
   }
 
-  void RenderState(unsigned char state, float center_x, float center_y){
+  void RenderOneStateMyBoard(unsigned char state, float center_x, float center_y){
     if(state & Board::ATTACKED){
       RenderString(std::string().append(1, 'x'),center_x + x_offet_for_better_display_, center_y, 1);
-    }else{
-      RenderString(std::string().append(1, 'o'),center_x + x_offet_for_better_display_, center_y, 1);
     }
   }
-
-
 
   void RenderBaseBoards()
   {

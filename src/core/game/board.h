@@ -28,7 +28,7 @@ public:
     // make a ship, append it to the ship list
     on_board_ships_.push_back(Ship(type));
     // ref to the new ship
-    Ship new_ship = on_board_ships_.back();
+    Ship& new_ship = on_board_ships_.back();
 
     // place the ship
     // TODO: possible code duplication
