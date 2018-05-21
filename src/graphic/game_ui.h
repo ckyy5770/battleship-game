@@ -67,10 +67,23 @@ private:
   static const size_t kBoardDim = 11;
 
   static const int kWindowWidth = 1000;
-  static const int kWindowHeight = 500;
-  static const int kWindowMargin = 150;
+  static const int kWindowHeight = 700;
+
+  static const int kBoardCanvasWidth = 1000;
+  static const int kBoardCanvasHeight = 450;
+  static const int kBoardCanvasMargin = 100;
+  static const int kBoardCanvasHeightOffset = 250;
+
+  static const int kInfoCanvasWidth = 1000;
+  static const int kInfoCanvasHeight = 200;
+  static const int kInfoCanvasWidthMargin = 150;
+  static const int kInfoCanvasHeightMargin = 0;
+  static const int kInfoCanvasHeightOffset = 50;
+
+  static const int kInfoLineNum = 6;
 
   static const int kBoardLineWidth = 5;
+  static const int kInfoLineWidth = 2;
 
   float x_offet_for_better_display_;
 
@@ -81,6 +94,8 @@ private:
     ClearCanvas();
     RenderMyBoard();
     RenderEnemyBoard();
+    RenderMyInfo();
+    RenderEnemyInfo();
   }
 
 
@@ -89,12 +104,71 @@ private:
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   }
 
+  void RenderMyInfo(){
+    glColor3f(0.0, 0.0, 0.0);
+    glLineWidth(kInfoLineWidth);
+    float center_x = kInfoCanvasWidth / 4;
+    float center_y = kInfoCanvasHeight / 2 + kInfoCanvasHeightOffset;
+    float width = kInfoCanvasWidth / 2 - kInfoCanvasWidthMargin;
+    float height = kInfoCanvasHeight - kInfoCanvasHeightMargin;
+
+    RenderRectangleWithShade(center_x, center_y, width, height, 1, 1, 1);
+
+    RenderMyLabel(center_x, center_y, width, height, 1);
+    RenderMyShipInfo(center_x, center_y, width, height);
+  }
+
+  void RenderMyShipInfo(float info_center_x, float info_center_y, float info_width, float info_height){
+    RenderString("carrier: " + std::to_string(ref_my_board_.carrier_num_) + " alive", info_center_x, GetLineCenterY(info_center_y, info_height, 2), 1);
+    RenderString("battleship: " + std::to_string(ref_my_board_.battleship_num_) + " alive", info_center_x, GetLineCenterY(info_center_y, info_height, 3), 1);
+    RenderString("cruiser: " + std::to_string(ref_my_board_.cruiser_num_) + " alive", info_center_x, GetLineCenterY(info_center_y, info_height, 4), 1);
+    RenderString("destroyer: " + std::to_string(ref_my_board_.destroyer_num_) + " alive", info_center_x, GetLineCenterY(info_center_y, info_height, 5), 1);
+  }
+
+  void RenderMyLabel(float info_center_x, float info_center_y, float info_width, float info_height, size_t which_line){
+    float height_per_line = info_height / kInfoLineNum;
+    RenderString("my board", info_center_x, GetLineCenterY(info_center_y, info_height, 1), 1);
+  }
+
+  float GetLineCenterY(float info_center_y, float info_height, size_t which_line){
+    float height_per_line = info_height / kInfoLineNum;
+    return info_center_y - info_height / 2 + height_per_line / 2 + (kInfoLineNum - which_line) * height_per_line;
+  }
+
+  void RenderEnemyInfo(){
+    glColor3f(0.0, 0.0, 0.0);
+    glLineWidth(kInfoLineWidth);
+    float center_x = kInfoCanvasWidth / 4 * 3;
+    float center_y = kInfoCanvasHeight / 2 + kInfoCanvasHeightOffset;
+    float width = kInfoCanvasWidth / 2 - kInfoCanvasWidthMargin;
+    float height = kInfoCanvasHeight - kInfoCanvasHeightMargin;
+
+    RenderRectangleWithShade(center_x, center_y, width, height, 1, 1, 1);
+
+    RenderEnemyLabel(center_x, center_y, width, height, 1);
+    RenderEnemyShipInfo(center_x, center_y, width, height);
+  }
+
+  // TODO: possible code dup
+  void RenderEnemyShipInfo(float info_center_x, float info_center_y, float info_width, float info_height){
+    RenderString("carrier: " + std::to_string(ref_enemy_board_.carrier_num_) + " alive", info_center_x, GetLineCenterY(info_center_y, info_height, 2), 1);
+    RenderString("battleship: " + std::to_string(ref_enemy_board_.battleship_num_) + " alive", info_center_x, GetLineCenterY(info_center_y, info_height, 3), 1);
+    RenderString("cruiser: " + std::to_string(ref_enemy_board_.cruiser_num_) + " alive", info_center_x, GetLineCenterY(info_center_y, info_height, 4), 1);
+    RenderString("destroyer: " + std::to_string(ref_enemy_board_.destroyer_num_) + " alive", info_center_x, GetLineCenterY(info_center_y, info_height, 5), 1);
+  }
+
+  // TODO: possible code dup
+  void RenderEnemyLabel(float info_center_x, float info_center_y, float info_width, float info_height, size_t which_line){
+    float height_per_line = info_height / kInfoLineNum;
+    RenderString("enemy board", info_center_x, GetLineCenterY(info_center_y, info_height, 1), 1);
+  }
+
   void RenderEnemyBoard(){
     glColor3f(0.0, 0.0, 0.0);
     glLineWidth(kBoardLineWidth);
-    float center_x = kWindowWidth / 4 * 3;
-    float center_y = kWindowHeight / 2;
-    float width = kWindowHeight - kWindowMargin;
+    float center_x = kBoardCanvasWidth / 4 * 3;
+    float center_y = kBoardCanvasHeight / 2 + kBoardCanvasHeightOffset;
+    float width = kBoardCanvasHeight - kBoardCanvasMargin;
     RenderBoardBase(center_x, center_y, width);
     RenderStatesEnemyBoard(center_x, center_y, width);
   }
@@ -122,9 +196,9 @@ private:
   void RenderMyBoard(){
     glColor3f(0.0, 0.0, 0.0);
     glLineWidth(kBoardLineWidth);
-    float center_x = kWindowWidth / 4;
-    float center_y = kWindowHeight / 2;
-    float width = kWindowHeight - kWindowMargin;
+    float center_x = kBoardCanvasWidth / 4;
+    float center_y = kBoardCanvasHeight / 2 + kBoardCanvasHeightOffset;
+    float width = kBoardCanvasHeight - kBoardCanvasMargin;
     RenderBoardBase(center_x, center_y, width);
 
     RenderShipsMyBoard(center_x, center_y, width);
@@ -148,13 +222,13 @@ private:
       case Direction::kHorisontal:{
         float rec_center_y = RowToCenterY(row, board_center_y, board_width);
         float rec_center_x = ColToCenterX(col, board_center_x, board_width) + (ship_size - 1) * width_per_square / 2;
-        RenderRectangleWithShade(rec_center_x, rec_center_y, ship_size * width_per_square - ship_margin, width_per_square - ship_margin);
+        RenderRectangleWithShade(rec_center_x, rec_center_y, ship_size * width_per_square - ship_margin, width_per_square - ship_margin, .85, .85, .85);
         break;
       }
       case Direction ::kVertical:{
         float rec_center_x = ColToCenterX(col, board_center_x, board_width);
         float rec_center_y = RowToCenterY(row, board_center_y, board_width) - (ship_size - 1) * width_per_square / 2;
-        RenderRectangleWithShade(rec_center_x, rec_center_y, width_per_square - ship_margin, ship_size * width_per_square - ship_margin);
+        RenderRectangleWithShade(rec_center_x, rec_center_y, width_per_square - ship_margin, ship_size * width_per_square - ship_margin, .85, .85, .85);
         break;
       }
       default:{
@@ -164,7 +238,7 @@ private:
     }
   }
 
-  void RenderRectangleWithShade(float center_x, float center_y, float width, float height){
+  void RenderRectangleWithShade(float center_x, float center_y, float width, float height, float r, float g, float b){
     float left_top_x = center_x - width / 2;
     float left_top_y = center_y + height / 2;
 
@@ -177,7 +251,7 @@ private:
     float right_bottom_x = center_x + width / 2;
     float right_bottom_y = center_y - height / 2;
 
-    glColor3f (.85, .85, .85);
+    glColor3f (r, g, b);
     glBegin(GL_POLYGON);
     glVertex3f(left_top_x, left_top_y, 0.0);
     glVertex3f(right_top_x, right_top_y, 0.0);
@@ -222,12 +296,6 @@ private:
     if(state & Board::ATTACKED){
       RenderString(std::string().append(1, 'x'),center_x + x_offet_for_better_display_, center_y, 1);
     }
-  }
-
-  void RenderBaseBoards()
-  {
-    RenderBoardBase(kWindowWidth / 4, kWindowHeight / 2, kWindowHeight - kWindowMargin);
-    RenderBoardBase(kWindowWidth / 4 * 3, kWindowHeight / 2, kWindowHeight - kWindowMargin);
   }
 
   void RenderSquare(float center_x, float center_y, float width){
