@@ -90,6 +90,7 @@ public:
       if(p_attacked_ship -> IsAlive()){
         return AttackResult(location, true, kNotAShip, false);
       }else{
+        DestroyOneOnBoard(p_attacked_ship->GetType());
         if(!Lose()){
           return AttackResult(location, true, p_attacked_ship -> GetType(), false);
         }else{
@@ -102,9 +103,20 @@ public:
 
   }
 
+  void SetGameOver(){
+    is_game_over_ = true;
+  }
+
+  void SetThisWinner(){
+    is_winner_me_ = true;
+  }
+
 private:
   // friends
   friend class GameUi;
+
+  bool is_game_over_ = false;
+  bool is_winner_me_ = false;
 
   // ships number currently on board
   std::size_t carrier_num_ = 0;
@@ -203,6 +215,39 @@ private:
       case kDestroyer:{
         assert(destroyer_num_ < kDestroyerNum);
         destroyer_num_ += 1;
+        break;
+      }
+      default:{
+        assert(false);
+      }
+    }
+  }
+
+  // TODO: possible dup
+  // decrement the on board ship number of given type
+  void DestroyOneOnBoard(ShipType type){
+    switch(type){
+      case kCarrier:{
+        assert(carrier_num_ > 0);
+        carrier_num_ -= 1;
+        break;
+      }
+      case kBattleShip:{
+        assert(battleship_num_ > 0);
+        battleship_num_-= 1;
+        break;
+      }
+      case kCruiser:{
+        assert(cruiser_num_ > 0);
+        cruiser_num_ -= 1;
+        break;
+      }
+      case kDestroyer:{
+        assert(destroyer_num_ > 0);
+        destroyer_num_ -= 1;
+        break;
+      }
+      case kNotAShip:{
         break;
       }
       default:{

@@ -27,22 +27,22 @@ public:
   void DestroyOneOnBoard(ShipType type){
     switch(type){
       case kCarrier:{
-        assert(carrier_num_ < kCarrierNum);
+        assert(carrier_num_ > 0);
         carrier_num_ -= 1;
         break;
       }
       case kBattleShip:{
-        assert(battleship_num_ < kBattleShipNum);
+        assert(battleship_num_ > 0);
         battleship_num_-= 1;
         break;
       }
       case kCruiser:{
-        assert(cruiser_num_ < kCruiserNum);
+        assert(cruiser_num_ > 0);
         cruiser_num_ -= 1;
         break;
       }
       case kDestroyer:{
-        assert(destroyer_num_ < kDestroyerNum);
+        assert(destroyer_num_ > 0);
         destroyer_num_ -= 1;
         break;
       }
@@ -55,11 +55,21 @@ public:
     }
   }
 
+  void SetGameOver(){
+    is_game_over_ = true;
+  }
+
+  void SetThisWinner(){
+    is_winner_me_ = true;
+  }
 
 
 private:
   // friends
   friend class GameUi;
+
+  bool is_game_over_ = false;
+  bool is_winner_me_ = false;
 
   // ships number currently on board
   std::size_t carrier_num_ = 1;

@@ -91,8 +91,10 @@ public:
           std::this_thread::sleep_for(std::chrono::milliseconds(500));
           bool win = MakeOneMove();
           if (win) {
+            is_winner_me_ = true;
             Logger("client wins the game.");
             ChangeStateTo(ClientState::kEndGame);
+            break;
           }
           ChangeStateTo(ClientState::kWait);
           break;
@@ -101,14 +103,17 @@ public:
           std::this_thread::sleep_for(std::chrono::milliseconds(500));
           bool lose = WaitForEnemyAndReplyWithResult();
           if (lose) {
+            is_winner_me_ = false;
             Logger("client loses the game.");
             ChangeStateTo(ClientState::kEndGame);
+            break;
           }
           ChangeStateTo(ClientState::kFire);
           break;
         }
         case ClientState::kEndGame: {
           Logger("game over.");
+          SetWinnerLoserOnBoards();
           CleanUp();
           return;
         }
@@ -135,6 +140,8 @@ private:
   Board my_board_;
   ClientTalker cli_talker_;
   ClientBrain cli_brain_;
+
+  bool is_winner_me_ = false;
 
   // game state
   ClientState state_;
@@ -171,17 +178,28 @@ private:
   // return true if win
   bool MakeOneMove() {
     AttackResult res = cli_talker_.Attack(cli_brain_.GenerateNextAttackLocation(StrategyAttack::kRandom));
-    if (res.attacker_win) return true;
     cli_brain_.DigestAttackResult(res);
+    if (res.attacker_win) return true;
     return false;
   }
 
   // return true if lose
   bool WaitForEnemyAndReplyWithResult() {
     AttackResult res = my_board_.Attack(cli_talker_.GetEnemyMove());
-    if (res.attacker_win) return true;
     cli_talker_.SendAttackResult(res.success, res.sink_ship_type, res.attacker_win);
+    if (res.attacker_win) return true;
     return false;
+  }
+
+  // set winner and loser on boards
+  void SetWinnerLoserOnBoards(){
+    my_board_.SetGameOver();
+    cli_brain_.GetRefEnemyBoard().SetGameOver();
+    if(is_winner_me_){
+      my_board_.SetThisWinner();
+    }else{
+      cli_brain_.GetRefEnemyBoard().SetThisWinner();
+    }
   }
 
   // TODO

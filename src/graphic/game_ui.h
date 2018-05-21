@@ -82,7 +82,7 @@ private:
 
   static const int kInfoLineNum = 6;
 
-  static const int kBoardLineWidth = 5;
+  static const int kBoardLineWidth = 3;
   static const int kInfoLineWidth = 2;
 
   float x_offet_for_better_display_;
@@ -114,20 +114,30 @@ private:
 
     RenderRectangleWithShade(center_x, center_y, width, height, 1, 1, 1);
 
-    RenderMyLabel(center_x, center_y, width, height, 1);
+    RenderMyLabel(center_x, center_y, width, height);
     RenderMyShipInfo(center_x, center_y, width, height);
+    RenderMyGameStatus(center_x, center_y, width, height);
   }
 
   void RenderMyShipInfo(float info_center_x, float info_center_y, float info_width, float info_height){
-    RenderString("carrier: " + std::to_string(ref_my_board_.carrier_num_) + " alive", info_center_x, GetLineCenterY(info_center_y, info_height, 2), 1);
-    RenderString("battleship: " + std::to_string(ref_my_board_.battleship_num_) + " alive", info_center_x, GetLineCenterY(info_center_y, info_height, 3), 1);
-    RenderString("cruiser: " + std::to_string(ref_my_board_.cruiser_num_) + " alive", info_center_x, GetLineCenterY(info_center_y, info_height, 4), 1);
-    RenderString("destroyer: " + std::to_string(ref_my_board_.destroyer_num_) + " alive", info_center_x, GetLineCenterY(info_center_y, info_height, 5), 1);
+    RenderString("carrier: " + std::to_string(ref_my_board_.carrier_num_) + " alive", info_center_x, GetLineCenterY(info_center_y, info_height, 2));
+    RenderString("battleship: " + std::to_string(ref_my_board_.battleship_num_) + " alive", info_center_x, GetLineCenterY(info_center_y, info_height, 3));
+    RenderString("cruiser: " + std::to_string(ref_my_board_.cruiser_num_) + " alive", info_center_x, GetLineCenterY(info_center_y, info_height, 4));
+    RenderString("destroyer: " + std::to_string(ref_my_board_.destroyer_num_) + " alive", info_center_x, GetLineCenterY(info_center_y, info_height, 5));
   }
 
-  void RenderMyLabel(float info_center_x, float info_center_y, float info_width, float info_height, size_t which_line){
-    float height_per_line = info_height / kInfoLineNum;
-    RenderString("my board", info_center_x, GetLineCenterY(info_center_y, info_height, 1), 1);
+  void RenderMyLabel(float info_center_x, float info_center_y, float info_width, float info_height){
+    RenderString("my board", info_center_x, GetLineCenterY(info_center_y, info_height, 1));
+  }
+
+  void RenderMyGameStatus(float info_center_x, float info_center_y, float info_width, float info_height){
+    if(ref_my_board_.is_game_over_){
+      if(ref_my_board_.is_winner_me_){
+        RenderString("winner", info_center_x, GetLineCenterY(info_center_y, info_height, 6), 1.0, 0.0, 0.0);
+      }else{
+        RenderString("loser", info_center_x, GetLineCenterY(info_center_y, info_height, 6), 0.0, 1.0, 0.0);
+      }
+    }
   }
 
   float GetLineCenterY(float info_center_y, float info_height, size_t which_line){
@@ -147,20 +157,32 @@ private:
 
     RenderEnemyLabel(center_x, center_y, width, height, 1);
     RenderEnemyShipInfo(center_x, center_y, width, height);
+    RenderEnemyGameStatus(center_x, center_y, width, height);
+  }
+
+  // TODO: possible code dup
+  void RenderEnemyGameStatus(float info_center_x, float info_center_y, float info_width, float info_height){
+    if(ref_enemy_board_.is_game_over_){
+      if(ref_enemy_board_.is_winner_me_){
+        RenderString("winner", info_center_x, GetLineCenterY(info_center_y, info_height, 6), 1.0, 0.0, 0.0);
+      }else{
+        RenderString("loser", info_center_x, GetLineCenterY(info_center_y, info_height, 6), 0.0, 1.0, 0.0);
+      }
+    }
   }
 
   // TODO: possible code dup
   void RenderEnemyShipInfo(float info_center_x, float info_center_y, float info_width, float info_height){
-    RenderString("carrier: " + std::to_string(ref_enemy_board_.carrier_num_) + " alive", info_center_x, GetLineCenterY(info_center_y, info_height, 2), 1);
-    RenderString("battleship: " + std::to_string(ref_enemy_board_.battleship_num_) + " alive", info_center_x, GetLineCenterY(info_center_y, info_height, 3), 1);
-    RenderString("cruiser: " + std::to_string(ref_enemy_board_.cruiser_num_) + " alive", info_center_x, GetLineCenterY(info_center_y, info_height, 4), 1);
-    RenderString("destroyer: " + std::to_string(ref_enemy_board_.destroyer_num_) + " alive", info_center_x, GetLineCenterY(info_center_y, info_height, 5), 1);
+    RenderString("carrier: " + std::to_string(ref_enemy_board_.carrier_num_) + " alive", info_center_x, GetLineCenterY(info_center_y, info_height, 2));
+    RenderString("battleship: " + std::to_string(ref_enemy_board_.battleship_num_) + " alive", info_center_x, GetLineCenterY(info_center_y, info_height, 3));
+    RenderString("cruiser: " + std::to_string(ref_enemy_board_.cruiser_num_) + " alive", info_center_x, GetLineCenterY(info_center_y, info_height, 4));
+    RenderString("destroyer: " + std::to_string(ref_enemy_board_.destroyer_num_) + " alive", info_center_x, GetLineCenterY(info_center_y, info_height, 5));
   }
 
   // TODO: possible code dup
   void RenderEnemyLabel(float info_center_x, float info_center_y, float info_width, float info_height, size_t which_line){
     float height_per_line = info_height / kInfoLineNum;
-    RenderString("enemy board", info_center_x, GetLineCenterY(info_center_y, info_height, 1), 1);
+    RenderString("enemy board", info_center_x, GetLineCenterY(info_center_y, info_height, 1));
   }
 
   void RenderEnemyBoard(){
@@ -184,11 +206,11 @@ private:
 
   void RenderOneStateEnemyBoard(unsigned char state, float center_x, float center_y){
     if(state & Board::OCCUPIED){
-      RenderString(std::string().append(1, 'o'),center_x + x_offet_for_better_display_, center_y, 1);
+      RenderString(std::string().append(1, 'o'),center_x + x_offet_for_better_display_, center_y);
     }else if(state & Board::ATTACKED){
       // only if not occupied, then we check if attacked
       // because if a location in enemy board is occupied, it must be attacked.
-      RenderString(std::string().append(1, 'x'),center_x + x_offet_for_better_display_, center_y, 1);
+      RenderString(std::string().append(1, 'x'),center_x + x_offet_for_better_display_, center_y);
     }
   }
 
@@ -294,7 +316,7 @@ private:
 
   void RenderOneStateMyBoard(unsigned char state, float center_x, float center_y){
     if(state & Board::ATTACKED){
-      RenderString(std::string().append(1, 'x'),center_x + x_offet_for_better_display_, center_y, 1);
+      RenderString(std::string().append(1, 'x'),center_x + x_offet_for_better_display_, center_y);
     }
   }
 
@@ -334,18 +356,23 @@ private:
     x_offet_for_better_display_ = width_per_square / 7;
 
     for(size_t i = 0; i < kBoardDim - 1; i++){
-      RenderString(std::to_string(kBoardDim - 1 - i), x_offet_for_better_display_ + center_left_bottom_x, center_left_bottom_y + i * width_per_square, 1);
+      RenderString(std::to_string(kBoardDim - 1 - i), x_offet_for_better_display_ + center_left_bottom_x, center_left_bottom_y + i * width_per_square);
     }
 
     for(size_t i = 0; i < kBoardDim - 1; i++){
-      RenderString(std::string().append(1, 'a' + i), x_offet_for_better_display_ + center_left_bottom_x + (i + 1) * width_per_square, center_left_bottom_y + (kBoardDim - 1) * width_per_square , 1);
+      RenderString(std::string().append(1, 'a' + i), x_offet_for_better_display_ + center_left_bottom_x + (i + 1) * width_per_square, center_left_bottom_y + (kBoardDim - 1) * width_per_square);
     }
   }
 
 // TODO: need better method to render texts
-  void RenderString(const std::string & s, float center_x, float center_y, float scale){
+  void RenderString(const std::string & s, float center_x, float center_y){
     DrawString(s, center_x, center_y);
   }
+
+  void RenderString(const std::string & s, float center_x, float center_y, float r, float g, float b){
+    DrawString(s, center_x, center_y, r, g, b);
+  }
+
 };
 
 #endif //GRAPTHIC_GAME_UI_H_
