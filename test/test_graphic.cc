@@ -2,41 +2,26 @@
 // Created by Kong, Chuilian on 5/20/18.
 //
 
+#include <thread>
 #include <iostream>
-#include <GLFW/glfw3.h>
+#include "graphic/game_ui.h"
+
+void attack(Board & my_board){
+  for(size_t i = 0; i < 100; i++){
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    my_board.Attack(i);
+    std::cout << "attacked " << i << std::endl;
+  }
+}
 
 int main(void)
 {
-  GLFWwindow* window;
+  Board my_board;
+  ImagineBoard enemy_board;
+  GameUi ui(my_board, enemy_board);
 
-  /* Initialize the library */
-  if (!glfwInit())
-    return -1;
+  std::thread new_thread(attack, std::ref(my_board));
 
-  /* Create a windowed mode window and its OpenGL context */
-  window = glfwCreateWindow(640, 480, "Battle Ship Game", NULL, NULL);
-  if (!window)
-  {
-    glfwTerminate();
-    return -1;
-  }
-
-  /* Make the window's context current */
-  glfwMakeContextCurrent(window);
-
-  /* Loop until the user closes the window */
-  while (!glfwWindowShouldClose(window))
-  {
-    /* Render here */
-    glClear(GL_COLOR_BUFFER_BIT);
-
-    /* Swap front and back buffers */
-    glfwSwapBuffers(window);
-
-    /* Poll for and process events */
-    glfwPollEvents();
-  }
-
-  glfwTerminate();
+  ui.Run();
   return 0;
 }

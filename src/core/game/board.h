@@ -81,6 +81,8 @@ public:
       throw GameException::kLocationAlreadyAttacked;
     }
 
+    states_[location] |= ATTACKED;
+
     if(states_[location] & OCCUPIED){
       // get ref of the attacked ship
       Ship* p_attacked_ship = which_ship_[location];
@@ -101,6 +103,9 @@ public:
   }
 
 private:
+  // friends
+  friend class GameUi;
+
   // ships number currently on board
   std::size_t carrier_num_ = 0;
   std::size_t battleship_num_ = 0;

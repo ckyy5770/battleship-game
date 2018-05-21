@@ -58,6 +58,9 @@ public:
 
 
 private:
+  // friends
+  friend class GameUi;
+
   // ships number currently on board
   std::size_t carrier_num_ = 1;
   std::size_t battleship_num_ = 2;

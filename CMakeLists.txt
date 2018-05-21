@@ -6,6 +6,8 @@ set(CMAKE_CXX_STANDARD 11)
 
 include_directories(lib/ src/)
 
+include_directories(/usr/local/include)
+
 ## OpendGL related libraries ##
 
 link_directories(/usr/local/lib)
@@ -24,6 +26,10 @@ find_package(GLUT REQUIRED)
 
 include_directories(${GLUT_INCLUDE_DIR})
 
+## threads ##
+
+FIND_PACKAGE ( Threads REQUIRED )
+
 ########################################
 
 add_executable(hello_world test/hello_world.cc)
@@ -37,4 +43,4 @@ add_executable(test_graphic test/test_graphic.cc)
 add_executable(client src/main/client_main.cc src/client src/core src/utils src/graphic)
 
 
-target_link_libraries(test_graphic ${GLFW_LIBRARIES} ${OPENGL_LIBRARIES} ${GLUT_LIBRARIES})
+target_link_libraries(test_graphic ${GLFW_LIBRARIES} ${OPENGL_LIBRARIES} ${GLUT_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
