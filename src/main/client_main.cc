@@ -2,8 +2,10 @@
 // Created by Kong, Chuilian on 5/16/18.
 //
 
+#include <thread>
 #include "tclap/CmdLine.h"
 #include "client/game_client.h"
+#include "graphic/game_ui.h"
 
 void ParseArgs(const int argc, const char** argv, ClientType* type, std::string* peer_ip, size_t* port, unsigned* client_id, unsigned* game_id){
   try{
@@ -37,6 +39,10 @@ void ParseArgs(const int argc, const char** argv, ClientType* type, std::string*
 
 }
 
+void RunClient(GameClient& cli){
+  cli.run();
+}
+
 int main(const int argc, const char** argv){
   ClientType type;
   std::string peer_ip;
@@ -48,5 +54,9 @@ int main(const int argc, const char** argv){
 
   GameClient client(type, peer_ip, port, client_id, game_id);
 
-  client.run();
+  GameUi ui(client.GetRefMyBoard(), client.GetRefEnemyBoard());
+
+  std::thread cli_thread(RunClient, std::ref(client));
+
+  ui.run();
 }

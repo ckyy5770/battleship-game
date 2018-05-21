@@ -18,7 +18,7 @@ public:
     ref_enemy_board_(enemy_board){
   }
 
-  int Run(){
+  int run(){
     GLFWwindow* window;
 
     /* Initialize the library */

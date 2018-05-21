@@ -76,6 +76,10 @@ public:
 
   }
 
+  ImagineBoard & GetRefEnemyBoard(){
+    return opponent_board_;
+  }
+
 
 private:
   Board& my_board_;

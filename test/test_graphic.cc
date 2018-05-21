@@ -39,6 +39,6 @@ int main(void)
   std::thread thread2(attack_enemy_board, std::ref(enemy_board));
   std::thread thread3(place_ship, std::ref(my_board));
 
-  ui.Run();
+  ui.run();
   return 0;
 }

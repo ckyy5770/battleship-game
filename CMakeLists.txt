@@ -44,3 +44,5 @@ add_executable(client src/main/client_main.cc src/client src/core src/utils src/
 
 
 target_link_libraries(test_graphic ${GLFW_LIBRARIES} ${OPENGL_LIBRARIES} ${GLUT_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+
+target_link_libraries(client ${GLFW_LIBRARIES} ${OPENGL_LIBRARIES} ${GLUT_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})

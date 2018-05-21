@@ -88,6 +88,7 @@ public:
           break;
         }
         case ClientState::kFire: {
+          std::this_thread::sleep_for(std::chrono::milliseconds(500));
           bool win = MakeOneMove();
           if (win) {
             Logger("client wins the game.");
@@ -97,6 +98,7 @@ public:
           break;
         }
         case ClientState::kWait: {
+          std::this_thread::sleep_for(std::chrono::milliseconds(500));
           bool lose = WaitForEnemyAndReplyWithResult();
           if (lose) {
             Logger("client loses the game.");
@@ -115,6 +117,14 @@ public:
         }
       } // end of switch statement
     } // end of while loop
+  }
+
+  Board& GetRefMyBoard(){
+    return my_board_;
+  }
+
+  ImagineBoard& GetRefEnemyBoard(){
+    return cli_brain_.GetRefEnemyBoard();
   }
 
 private:
