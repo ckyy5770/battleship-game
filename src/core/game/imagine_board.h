@@ -55,6 +55,42 @@ public:
     }
   }
 
+  void UpdateLastAttackInfo(const AttackResult & res){
+    last_attack_location_ = res.location;
+    last_attack_success_ = res.success;
+    last_attack_sink_ship_type_ = res.sink_ship_type;
+  }
+
+  std::vector<size_t> GetUnAttackedLocations(){
+    std::vector<size_t> res;
+    for(size_t i = 0; i < kDim * kDim; ++i){
+      if(!(states_[i] & ATTACKED)){
+        res.emplace_back(i);
+      }
+    }
+    return res;
+  }
+
+  std::vector<size_t> GetSurroundingFourUnAttacked(size_t location){
+    std::vector<size_t> res;
+    const size_t kDoesntExist = kDim * kDim;
+    size_t left = location > 0 ? location - 1 : kDoesntExist;
+    size_t right = location % kDim < kDim - 1 ? location + 1 : kDoesntExist;
+    size_t up = location / kDim > 0 ? location - kDim : kDoesntExist;
+    size_t down = location / kDim < kDim - 1 ? location + kDim : kDoesntExist;
+
+    if(left != kDoesntExist && !(states_[left] & ATTACKED)) res.emplace_back(left);
+    if(right != kDoesntExist && !(states_[right] & ATTACKED)) res.emplace_back(right);
+    if(up != kDoesntExist && !(states_[up] & ATTACKED)) res.emplace_back(up);
+    if(down != kDoesntExist && !(states_[down] & ATTACKED)) res.emplace_back(down);
+
+    return res;
+  }
+
+  bool LocationAttacked(size_t location){
+    return states_[location] & ATTACKED;
+  }
+
   void SetGameOver(){
     is_game_over_ = true;
   }
@@ -70,6 +106,7 @@ public:
 private:
   // friends
   friend class GameUi;
+  friend class AttackLocationUnit;
 
   bool is_game_over_ = false;
   bool is_winner_me_ = false;
@@ -88,6 +125,11 @@ private:
 
   // bit flag indicates the state of one spot
   unsigned char states_[kDim * kDim];
+
+  // my brian should remember some stuff
+  size_t last_attack_location_;
+  bool last_attack_success_;
+  ShipType last_attack_sink_ship_type_;
 
 };
 

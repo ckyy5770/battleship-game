@@ -37,6 +37,13 @@ public:
     std::shuffle(up_new_rand_dir.get(), up_new_rand_dir.get() + size, engine);
     return up_new_rand_dir.release();
   }
+
+  static size_t GetRandomSizeT(size_t inclusive_low, size_t inclusive_hi){
+    std::random_device rd;
+    std::mt19937 mt(rd());
+    std::uniform_int_distribution<size_t> dist(inclusive_low, inclusive_hi);
+    return dist(mt);
+  }
 };
 
 #endif //BATTLESHIP_GAME_RANDOM_UNIT_H

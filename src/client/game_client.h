@@ -180,7 +180,7 @@ private:
     // increment my move number by one
     my_board_.IncrementOneMove();
 
-    AttackResult res = cli_talker_.Attack(cli_brain_.GenerateNextAttackLocation(StrategyAttack::kRandom));
+    AttackResult res = cli_talker_.Attack(cli_brain_.GenerateNextAttackLocation(StrategyAttack::kDFS));
     cli_brain_.DigestAttackResult(res);
     if (res.attacker_win) return true;
     return false;
