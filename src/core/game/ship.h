@@ -54,6 +54,14 @@ public:
     return type_;
   }
 
+  Direction GetDirection(){
+    return direction_;
+  }
+
+  size_t GetHeadLoaction(){
+    return head_location_;
+  }
+
 private:
   ShipType type_;
   std::size_t remaining_life_;

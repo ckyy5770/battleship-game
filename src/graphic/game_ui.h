@@ -70,6 +70,8 @@ private:
   static const int kWindowHeight = 500;
   static const int kWindowMargin = 150;
 
+  static const int kBoardLineWidth = 5;
+
   float x_offet_for_better_display_;
 
   Board & ref_my_board_;
@@ -78,6 +80,8 @@ private:
   void RenderGameUi(){
     ClearCanvas();
     RenderMyBoard();
+
+    RenderRectangleWithShade(300, 300, 200, 100);
   }
 
 
@@ -88,7 +92,7 @@ private:
 
   void RenderMyBoard(){
     glColor3f(0.0, 0.0, 0.0);
-    glLineWidth(5);
+    glLineWidth(kBoardLineWidth);
     float center_x = kWindowWidth / 4;
     float center_y = kWindowHeight / 2;
     float width = kWindowHeight - kWindowMargin;
@@ -99,7 +103,61 @@ private:
   }
 
   void RenderShipsMyBoard(float board_center_x, float board_center_y, float board_width){
+    for(Ship ship : ref_my_board_.on_board_ships_){
+      ship.GetHeadLoaction();
+    }
+  }
 
+  void RenderShip(ShipType  type, size_t head_location, Direction direction, float board_center_x, float board_center_y, float board_width){
+    size_t size = GetSizeFromType(type);
+    size_t row = head_location / kDim;
+    size_t col = head_location % kDim;
+    switch(direction){
+      case Direction::kHorisontal:{
+
+        break;
+      }
+      case Direction ::kVertical:{
+        break;
+      }
+      default:{
+        Logger("can not render kNotAShip");
+        assert(false);
+      }
+    }
+  }
+
+  void RenderRectangleWithShade(float center_x, float center_y, float width, float height){
+    float left_top_x = center_x - width / 2;
+    float left_top_y = center_y + height / 2;
+
+    float left_bottom_x = center_x - width / 2;
+    float left_bottom_y = center_y - height / 2;
+
+    float right_top_x = center_x + width / 2;
+    float right_top_y = center_y + height / 2;
+
+    float right_bottom_x = center_x + width / 2;
+    float right_bottom_y = center_y - height / 2;
+
+    glColor3f (.85, .85, .85);
+    glBegin(GL_POLYGON);
+    glVertex3f(left_top_x, left_top_y, 0.0);
+    glVertex3f(right_top_x, right_top_y, 0.0);
+    glVertex3f(right_bottom_x, right_bottom_y, 0.0);
+    glVertex3f(left_bottom_x, left_bottom_y, 0.0);
+    glEnd();
+
+    glColor3f (0.0, 0.0, 0.0);
+    glLineWidth(3);
+    glBegin(GL_LINE_LOOP);
+    glVertex3f(left_top_x, left_top_y, 0.0);
+    glVertex3f(right_top_x, right_top_y, 0.0);
+    glVertex3f(right_bottom_x, right_bottom_y, 0.0);
+    glVertex3f(left_bottom_x, left_bottom_y, 0.0);
+    glEnd();
+
+    glLineWidth(kBoardLineWidth);
   }
 
   void RenderStatesMyBoard(float board_center_x, float board_center_y, float board_width){
