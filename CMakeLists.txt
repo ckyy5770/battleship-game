@@ -40,7 +40,7 @@ add_executable(test_serialization test/test_serialization.cc)
 
 add_executable(test_graphic test/test_graphic.cc)
 
-add_executable(client src/main/client_main.cc src/client src/core src/utils src/graphic)
+add_executable(client src/main/client_main.cc src/client src/core src/utils src/graphic src/ai)
 
 
 target_link_libraries(test_graphic ${GLFW_LIBRARIES} ${OPENGL_LIBRARIES} ${GLUT_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})

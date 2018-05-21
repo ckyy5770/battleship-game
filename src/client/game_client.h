@@ -88,7 +88,7 @@ public:
           break;
         }
         case ClientState::kFire: {
-          std::this_thread::sleep_for(std::chrono::milliseconds(500));
+          std::this_thread::sleep_for(std::chrono::milliseconds(100));
           bool win = MakeOneMove();
           if (win) {
             is_winner_me_ = true;
@@ -100,7 +100,7 @@ public:
           break;
         }
         case ClientState::kWait: {
-          std::this_thread::sleep_for(std::chrono::milliseconds(500));
+          std::this_thread::sleep_for(std::chrono::milliseconds(100));
           bool lose = WaitForEnemyAndReplyWithResult();
           if (lose) {
             is_winner_me_ = false;
