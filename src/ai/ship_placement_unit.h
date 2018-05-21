@@ -6,10 +6,14 @@
 #define BATTLESHIP_GAME_SHIP_PLACEMENT_UNIT_H
 
 #include <vector>
+#include <memory>
+#include "ai/random_unit.h"
 #include "core/game/board.h"
 
+
 enum class StrategyPlaceShip{
-  kFixed
+  kFixed,
+  kRandom
 };
 
 struct ShipPlacementInfo{
@@ -33,6 +37,9 @@ public:
     switch(strategy){
       case StrategyPlaceShip::kFixed:{
         return ShipPlacingPlanFixed();
+      }
+      case StrategyPlaceShip::kRandom:{
+        return ShipPlacingPlanRandom();
       }
       default:{
         assert(false);
@@ -58,6 +65,31 @@ private:
     ret.emplace_back(ShipPlacementInfo(ShipType::kDestroyer, 9, Direction::kVertical));
 
     return ret;
+  }
+
+  std::vector<ShipPlacementInfo> ShipPlacingPlanRandom(){
+    std::vector<ShipPlacementInfo> res;
+    PlaceOneType(ShipType::kCarrier, res);
+    PlaceOneType(ShipType::kBattleShip, res);
+    PlaceOneType(ShipType::kCruiser, res);
+    PlaceOneType(ShipType::kDestroyer, res);
+    return res;
+  }
+
+  void PlaceOneType(ShipType type, std::vector<ShipPlacementInfo> & res){
+    std::unique_ptr<size_t[]> up_random_location(RandomUnit::NewRandomSequenceArray(kDim * kDim));
+    std::unique_ptr<Direction[]> up_random_direction(RandomUnit::NewRandomDirectionArray(kDim * kDim));
+    size_t p_current = 0;
+    while(trial_board_.CanPlaceMore(type)){
+      size_t location = up_random_location.get()[p_current];
+      Direction direction = up_random_direction.get()[p_current];
+
+      bool success = trial_board_.PlaceAShip(type, location, direction);
+      if(success){
+        res.emplace_back(ShipPlacementInfo(type, location, direction));
+      }
+      p_current++;
+    }
   }
 };
 

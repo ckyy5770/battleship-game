@@ -80,7 +80,7 @@ private:
   static const int kInfoCanvasHeightMargin = 0;
   static const int kInfoCanvasHeightOffset = 50;
 
-  static const int kInfoLineNum = 6;
+  static const int kInfoLineNum = 7;
 
   static const int kBoardLineWidth = 3;
   static const int kInfoLineWidth = 2;
@@ -117,6 +117,7 @@ private:
     RenderMyLabel(center_x, center_y, width, height);
     RenderMyShipInfo(center_x, center_y, width, height);
     RenderMyGameStatus(center_x, center_y, width, height);
+    RenderMyMoveNum(center_x, center_y, width, height);
   }
 
   void RenderMyShipInfo(float info_center_x, float info_center_y, float info_width, float info_height){
@@ -126,6 +127,10 @@ private:
     RenderString("destroyer: " + std::to_string(ref_my_board_.destroyer_num_) + " alive", info_center_x, GetLineCenterY(info_center_y, info_height, 5));
   }
 
+  void RenderMyMoveNum(float info_center_x, float info_center_y, float info_width, float info_height){
+    RenderString("total " + std::to_string(ref_my_board_.move_num_) + " moves", info_center_x, GetLineCenterY(info_center_y, info_height, 6));
+  }
+
   void RenderMyLabel(float info_center_x, float info_center_y, float info_width, float info_height){
     RenderString("my board", info_center_x, GetLineCenterY(info_center_y, info_height, 1));
   }
@@ -133,9 +138,9 @@ private:
   void RenderMyGameStatus(float info_center_x, float info_center_y, float info_width, float info_height){
     if(ref_my_board_.is_game_over_){
       if(ref_my_board_.is_winner_me_){
-        RenderString("winner", info_center_x, GetLineCenterY(info_center_y, info_height, 6), 1.0, 0.0, 0.0);
+        RenderString("winner", info_center_x, GetLineCenterY(info_center_y, info_height, 7), 1.0, 0.0, 0.0);
       }else{
-        RenderString("loser", info_center_x, GetLineCenterY(info_center_y, info_height, 6), 0.0, 1.0, 0.0);
+        RenderString("loser", info_center_x, GetLineCenterY(info_center_y, info_height, 7), 0.0, 1.0, 0.0);
       }
     }
   }
@@ -158,15 +163,21 @@ private:
     RenderEnemyLabel(center_x, center_y, width, height, 1);
     RenderEnemyShipInfo(center_x, center_y, width, height);
     RenderEnemyGameStatus(center_x, center_y, width, height);
+    RenderEnemyMoveNum(center_x, center_y, width, height);
+  }
+
+  // TODO: possible code dup
+  void RenderEnemyMoveNum(float info_center_x, float info_center_y, float info_width, float info_height){
+    RenderString("total " + std::to_string(ref_my_board_.move_num_) + " moves", info_center_x, GetLineCenterY(info_center_y, info_height, 6));
   }
 
   // TODO: possible code dup
   void RenderEnemyGameStatus(float info_center_x, float info_center_y, float info_width, float info_height){
     if(ref_enemy_board_.is_game_over_){
       if(ref_enemy_board_.is_winner_me_){
-        RenderString("winner", info_center_x, GetLineCenterY(info_center_y, info_height, 6), 1.0, 0.0, 0.0);
+        RenderString("winner", info_center_x, GetLineCenterY(info_center_y, info_height, 7), 1.0, 0.0, 0.0);
       }else{
-        RenderString("loser", info_center_x, GetLineCenterY(info_center_y, info_height, 6), 0.0, 1.0, 0.0);
+        RenderString("loser", info_center_x, GetLineCenterY(info_center_y, info_height, 7), 0.0, 1.0, 0.0);
       }
     }
   }

@@ -21,25 +21,11 @@ public:
   }
 
   std::vector<ShipPlacementInfo> GenerateShipPlacingPlan(const StrategyPlaceShip& strategy){
-    switch (strategy) {
-      case StrategyPlaceShip::kFixed:{
-        return ship_placement_unit_.ShipPlacingPlan(strategy);
-      }
-      default:{
-        assert(false);
-      }
-    }
+    return ship_placement_unit_.ShipPlacingPlan(strategy);
   }
 
   std::size_t GenerateNextAttackLocation(const StrategyAttack& strategy){
-    switch (strategy) {
-      case StrategyAttack::kRandom:{
-        return attack_location_unit_.NextAttackLocation(strategy);
-      }
-      default:{
-        assert(false);
-      }
-    }
+    return attack_location_unit_.NextAttackLocation(strategy);
   }
 
   void DigestAttackResult(const AttackResult& res){

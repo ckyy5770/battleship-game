@@ -111,12 +111,19 @@ public:
     is_winner_me_ = true;
   }
 
+  void IncrementOneMove(){
+    move_num_ += 1;
+  }
+
 private:
   // friends
   friend class GameUi;
+  friend class ShipPlacementUnit;
 
   bool is_game_over_ = false;
   bool is_winner_me_ = false;
+
+  size_t move_num_ = 0;
 
   // ships number currently on board
   std::size_t carrier_num_ = 0;

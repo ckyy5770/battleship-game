@@ -157,7 +157,7 @@ private:
   }
 
   void PlaceShips() {
-    std::vector<ShipPlacementInfo> plan = cli_brain_.GenerateShipPlacingPlan(StrategyPlaceShip::kFixed);
+    std::vector<ShipPlacementInfo> plan = cli_brain_.GenerateShipPlacingPlan(StrategyPlaceShip::kRandom);
     for (auto placement : plan) {
       // TODO place ship may fail, but only if the brain generated a faulty plan
       // brain should be responsible for the error-free placement plan.
@@ -177,6 +177,9 @@ private:
 
   // return true if win
   bool MakeOneMove() {
+    // increment my move number by one
+    my_board_.IncrementOneMove();
+
     AttackResult res = cli_talker_.Attack(cli_brain_.GenerateNextAttackLocation(StrategyAttack::kRandom));
     cli_brain_.DigestAttackResult(res);
     if (res.attacker_win) return true;
@@ -185,6 +188,9 @@ private:
 
   // return true if lose
   bool WaitForEnemyAndReplyWithResult() {
+    // increment enemy move number by one
+    GetRefEnemyBoard().IncrementOneMove();
+
     AttackResult res = my_board_.Attack(cli_talker_.GetEnemyMove());
     cli_talker_.SendAttackResult(res.success, res.sink_ship_type, res.attacker_win);
     if (res.attacker_win) return true;

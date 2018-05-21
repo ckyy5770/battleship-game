@@ -16,7 +16,7 @@ enum class StrategyAttack{
 class AttackLocationUnit{
 public:
   AttackLocationUnit():
-    random_sequence_(RandomUnit::NewRandomSequence(kDim * kDim)){
+    random_sequence_(RandomUnit::NewRandomSequenceArray(kDim * kDim)){
   }
 
   std::size_t NextAttackLocation(const StrategyAttack & strategy){
