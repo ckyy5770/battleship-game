@@ -4,20 +4,12 @@
 
 // if CLEAN_QUIT is not defined, the game ui will never quit,
 // and we main thread will never get the game result.
-//#define CLEAN_EXIT
+#define CLEAN_EXIT
 
 #include <thread>
-#include <future>
 #include "tclap/CmdLine.h"
 #include "client/game_client.h"
 #include "graphic/game_ui.h"
-
-#include <pthread.h>
-#include <signal.h>
-
-// TODO: this is only for signal handler, globel
-GameUi * p_ui;
-
 
 void ParseArgs(const int argc, const char** argv, ClientType* type, std::string* peer_ip, size_t* port, unsigned* client_id, unsigned* game_id){
   try{
@@ -51,18 +43,9 @@ void ParseArgs(const int argc, const char** argv, ClientType* type, std::string*
 
 }
 
-GameStat RunClient(GameClient& cli){
-  return cli.run();
-}
-
-void main_thread_signal_handler(int signal) {
-  if(signal == SIGUSR1){
-    // TODO need a way to get game result
-    p_ui -> stop();
-  }else{
-    Logger("unexpected signal");
-    assert(false);
-  }
+void RunClient(GameClient& cli){
+  cli.run();
+  return;
 }
 
 int main(const int argc, const char** argv){
@@ -74,28 +57,12 @@ int main(const int argc, const char** argv){
 
   ParseArgs(argc, argv, &type, &peer_ip, &port, &client_id, &game_id);
 
-  signal(SIGUSR1, main_thread_signal_handler);
-
   GameClient client(type, peer_ip, port, client_id, game_id, pthread_self());
 
   GameUi ui(client.GetRefMyBoard(), client.GetRefEnemyBoard());
 
-  p_ui = &ui;
-
-  std::future<GameStat> ret = std::async(&RunClient, std::ref(client));
+  std::thread cli_thread(RunClient, std::ref(client));
 
   ui.run();
-
-  GameStat game_stat = ret.get();
-
-  if(game_stat.result == GameResult::kWin){
-    std::cout << "win" << std::endl;
-  }else if(game_stat.result == GameResult::kLose){
-    std::cout << "lose" << std::endl;
-  }else{
-    assert(false);
-  }
-
-  std::cout << game_stat.num_moves << std::endl;
 
 }

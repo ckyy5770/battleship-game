@@ -79,7 +79,7 @@ public:
 
   }
 
-  GameStat run() {
+  void run() {
     while (true) {
       switch (state_) {
         case ClientState::kStarted: {
@@ -134,7 +134,8 @@ public:
         case ClientState::kEndGame: {
           Logger("game over.");
           SetWinnerLoserOnBoards();
-          return CleanUpAndReturnStats();
+          OutputResultAndExit();
+          return;
         }
         default: {
           assert(false);
@@ -231,18 +232,12 @@ private:
     }
   }
 
-  GameStat CleanUpAndReturnStats() {
+  void OutputResultAndExit() {
+    LogResult(cli_id_, game_id_, is_winner_me_, my_board_.GetNumMoves());
 
 #ifdef CLEAN_EXIT
-    Logger("sending SIGUSR1 to main thread...");
-    pthread_kill(main_thread_, SIGUSR1);
+    exit(0);
 #endif
-
-    if(is_winner_me_){
-      return GameStat(GameResult::kWin, my_board_.GetNumMoves());
-    }else{
-      return GameStat(GameResult::kLose, my_board_.GetNumMoves());
-    }
   }
 
 };
