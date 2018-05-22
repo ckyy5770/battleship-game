@@ -12,10 +12,6 @@
 #include "core/game/board.h"
 #include "utils/utils.h"
 
-#include <pthread.h>
-#include <signal.h>
-#include <stdlib.h>
-
 enum class GameResult{
   kWin,
   kLose
