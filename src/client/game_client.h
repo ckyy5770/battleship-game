@@ -12,6 +12,24 @@
 #include "core/game/board.h"
 #include "utils/utils.h"
 
+#include <pthread.h>
+#include <signal.h>
+#include <stdlib.h>
+
+enum class GameResult{
+  kWin,
+  kLose
+};
+
+struct GameStat{
+  GameResult result;
+  size_t num_moves;
+
+  GameStat(GameResult res, size_t num_moves):
+    result(res),
+    num_moves(num_moves){};
+};
+
 enum class ClientState {
   kStarted,
   kConnected,
@@ -50,16 +68,18 @@ static std::string ClientStateToString(const ClientState state){
 class GameClient {
 public:
   GameClient(const ClientType &type, const std::string &peer_ip, const std::size_t &port, const ClientId &cli_id,
-             const GameId &game_id) :
+             const GameId &game_id, pthread_t main_thread) :
     cli_type_(type),
     cli_id_(cli_id),
     game_id_(game_id),
     cli_talker_(type, peer_ip, port, cli_id, game_id),
     cli_brain_{my_board_},
-    state_(ClientState::kStarted) {
+    state_(ClientState::kStarted),
+    main_thread_(main_thread){
+
   }
 
-  void run() {
+  GameStat run() {
     while (true) {
       switch (state_) {
         case ClientState::kStarted: {
@@ -114,8 +134,7 @@ public:
         case ClientState::kEndGame: {
           Logger("game over.");
           SetWinnerLoserOnBoards();
-          CleanUp();
-          return;
+          return CleanUpAndReturnStats();
         }
         default: {
           assert(false);
@@ -145,6 +164,10 @@ private:
 
   // game state
   ClientState state_;
+
+  // TODO: we have to use signal to interrupt ui thread (main thread), there maybe better way
+  pthread_t main_thread_;
+
 
   void ChangeStateTo(ClientState new_state) {
     Logger(ClientStateToString(state_) + " change to " + ClientStateToString(new_state));
@@ -208,9 +231,18 @@ private:
     }
   }
 
-  // TODO
-  void CleanUp() {
+  GameStat CleanUpAndReturnStats() {
 
+#ifdef CLEAN_EXIT
+    Logger("sending SIGUSR1 to main thread...");
+    pthread_kill(main_thread_, SIGUSR1);
+#endif
+
+    if(is_winner_me_){
+      return GameStat(GameResult::kWin, my_board_.GetNumMoves());
+    }else{
+      return GameStat(GameResult::kLose, my_board_.GetNumMoves());
+    }
   }
 
 };

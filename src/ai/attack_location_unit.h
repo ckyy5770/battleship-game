@@ -37,15 +37,13 @@ public:
 private:
   ImagineBoard & ref_enemy_board_;
 
-
   // for DFS strategy
   std::vector<size_t> target_location_stack_;
-  //DfsState dfs_state_ = DfsState::kRandomFire;
 
   // attack strategies
   std::size_t NextAttackLocationRandom(){
     auto locations = ref_enemy_board_.GetUnAttackedLocations();
-    size_t rand = RandomUnit::GetRandomSizeT(0, locations.size());
+    size_t rand = RandomUnit::GetRandomSizeT(0, locations.size() - 1);
     return locations[rand];
   }
 
@@ -61,7 +59,6 @@ private:
       // append to the end of the stack
       target_location_stack_.insert(target_location_stack_.end(), new_targets.begin(), new_targets.end());
     }
-
 
     while(!target_location_stack_.empty()){
       size_t location = target_location_stack_.back();

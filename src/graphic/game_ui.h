@@ -47,7 +47,7 @@ public:
     glOrtho(0.0,kWindowWidth,0.0,kWindowHeight,0.0,1.0); // this creates a canvas you can do 2D drawing on
 
     /* Loop until the user closes the window */
-    while (!glfwWindowShouldClose(window))
+    while (!glfwWindowShouldClose(window) && !stop_)
     {
       /* Render here */
       RenderGameUi();
@@ -61,6 +61,10 @@ public:
 
     glfwTerminate();
     return 0;
+  }
+
+  void stop(){
+    stop_ = true;
   }
 
 private:
@@ -89,6 +93,9 @@ private:
 
   Board & ref_my_board_;
   ImagineBoard & ref_enemy_board_;
+
+  // TODO: a flag that allow other thread to stop the endless loop
+  bool stop_ = false;
 
   void RenderGameUi(){
     ClearCanvas();

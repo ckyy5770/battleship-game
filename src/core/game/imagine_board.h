@@ -64,7 +64,7 @@ public:
   std::vector<size_t> GetUnAttackedLocations(){
     std::vector<size_t> res;
     for(size_t i = 0; i < kDim * kDim; ++i){
-      if(!(states_[i] & ATTACKED)){
+      if(!LocationAttacked(i)){
         res.emplace_back(i);
       }
     }
@@ -79,10 +79,10 @@ public:
     size_t up = location / kDim > 0 ? location - kDim : kDoesntExist;
     size_t down = location / kDim < kDim - 1 ? location + kDim : kDoesntExist;
 
-    if(left != kDoesntExist && !(states_[left] & ATTACKED)) res.emplace_back(left);
-    if(right != kDoesntExist && !(states_[right] & ATTACKED)) res.emplace_back(right);
-    if(up != kDoesntExist && !(states_[up] & ATTACKED)) res.emplace_back(up);
-    if(down != kDoesntExist && !(states_[down] & ATTACKED)) res.emplace_back(down);
+    if(left != kDoesntExist && !LocationAttacked(left)) res.emplace_back(left);
+    if(right != kDoesntExist && !LocationAttacked(right)) res.emplace_back(right);
+    if(up != kDoesntExist && !LocationAttacked(up)) res.emplace_back(up);
+    if(down != kDoesntExist && !LocationAttacked(down)) res.emplace_back(down);
 
     return res;
   }
@@ -101,6 +101,10 @@ public:
 
   void IncrementOneMove(){
     move_num_ += 1;
+  }
+
+  size_t GetNumMoves(){
+    return move_num_;
   }
 
 private:

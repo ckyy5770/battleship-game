@@ -115,6 +115,10 @@ public:
     move_num_ += 1;
   }
 
+  size_t GetNumMoves(){
+    return move_num_;
+  }
+
 private:
   // friends
   friend class GameUi;
