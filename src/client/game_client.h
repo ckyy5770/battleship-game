@@ -12,20 +12,6 @@
 #include "core/game/board.h"
 #include "utils/utils.h"
 
-enum class GameResult{
-  kWin,
-  kLose
-};
-
-struct GameStat{
-  GameResult result;
-  size_t num_moves;
-
-  GameStat(GameResult res, size_t num_moves):
-    result(res),
-    num_moves(num_moves){};
-};
-
 enum class ClientState {
   kStarted,
   kConnected,

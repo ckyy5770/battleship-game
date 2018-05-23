@@ -107,10 +107,50 @@ public:
     return move_num_;
   }
 
+  bool DoesShipFit(ShipType type, std::size_t head_location, Direction direction){
+    if(head_location >= kDim * kDim) return false;
+
+    // TODO: possible code duplication
+    std::size_t size = GetSizeFromType(type);
+    std::size_t row = head_location / kDim;
+    std::size_t col = head_location % kDim;
+
+    switch(direction){
+      case kVertical:{
+        // boundary check
+        if(row + size - 1 >= kDim) return false;
+        // every subsequential spot should not be (attacked but not occupied)
+        // every subsequential spot should be (not attacked or (occupied))
+        for(std::size_t i = 0; i < size; i++){
+          unsigned char state = states_[head_location + i * kDim];
+          if((state & ATTACKED) && !(state & OCCUPIED)) return false;
+        }
+        break;
+      }
+      case kHorisontal:{
+        // boundary check
+        if(col + size - 1 >= kDim) return false;
+        // every subsequential spot should not be (attacked but not occupied)
+        // every subsequential spot should be (not attacked or (occupied))
+        for(std::size_t i = 0; i < size; i++){
+          unsigned char state = states_[head_location + i];
+          if((state & ATTACKED) && !(state & OCCUPIED)) return false;
+        }
+        break;
+      }
+      default:{
+        assert(false);
+      }
+    }
+
+    return true;
+  }
+
 private:
   // friends
   friend class GameUi;
   friend class AttackLocationUnit;
+  friend class ProbabilityBoard;
 
   bool is_game_over_ = false;
   bool is_winner_me_ = false;

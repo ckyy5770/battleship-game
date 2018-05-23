@@ -12,7 +12,8 @@
 
 enum class StrategyAttack{
   kRandom,
-  kDFS
+  kDFS,
+  kProbabilitySimple
 };
 
 class AttackLocationUnit{
@@ -28,6 +29,9 @@ public:
       }
       case StrategyAttack ::kDFS:{
         return NextAttackLocationDFS();
+      }
+      case StrategyAttack ::kProbabilitySimple:{
+        return NextAttackLocationProbabilitySimple();
       }
       default:{
         assert(false);
@@ -68,6 +72,17 @@ private:
 
     return NextAttackLocationRandom();
   }
+
+  // probability attack
+  // determine which location is the most probable to be occupied
+  // we start with simple probability analysis:
+  // try to place each of the ship to every location, in every direction
+  // one successful placement increment the probability of all spots the ship occupied
+  std::size_t NextAttackLocationProbabilitySimple(){
+
+  }
+
+
 };
 
 #endif //BATTLESHIP_GAME_ATTACK_LOCATION_UNIT_H
