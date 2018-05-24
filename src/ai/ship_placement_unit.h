@@ -8,6 +8,7 @@
 #include <vector>
 #include <memory>
 #include "ai/random_unit.h"
+#include "ai/ai_common.h"
 #include "core/game/board.h"
 
 
@@ -15,19 +16,6 @@ enum class StrategyPlaceShip{
   kFixed,
   kRandom
 };
-
-struct ShipPlacementInfo{
-  ShipType type;
-  std::size_t head_location;
-  Direction direction;
-
-  ShipPlacementInfo(){};
-  ShipPlacementInfo(ShipType type, std::size_t head_location, Direction direction):
-    type(type),
-    head_location(head_location),
-    direction(direction){};
-};
-
 
 class ShipPlacementUnit{
 public:

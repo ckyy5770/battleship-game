@@ -146,6 +146,27 @@ public:
     return true;
   }
 
+  // TODO: this can be used to reduce code dup in probability attack module
+  size_t GetAliveShipNumber(ShipType type){
+    switch(type){
+      case ShipType::kCarrier:{
+        return cruiser_num_;
+      }
+      case ShipType::kBattleShip:{
+        return battleship_num_;
+      }
+      case ShipType::kCruiser:{
+        return cruiser_num_;
+      }
+      case ShipType::kDestroyer:{
+        return destroyer_num_;
+      }
+      default:{
+        assert(false);
+      }
+    }
+  }
+
 private:
   // friends
   friend class GameUi;
