@@ -3,7 +3,7 @@
 #ifndef CORE_GAME_GAME_COMMON_H_
 #define CORE_GAME_GAME_COMMON_H_
 
-#include <iostream>
+#include <vector>
 #include "utils/utils.h"
 
 
@@ -61,6 +61,15 @@ std::size_t GetSizeFromType(ShipType type){
       assert(false);
     }
   }
+}
+
+std::vector<ShipType> GetShipTypeList(){
+  std::vector<ShipType> res;
+  res.emplace_back(ShipType::kCarrier);
+  res.emplace_back(ShipType::kBattleShip);
+  res.emplace_back(ShipType::kCruiser);
+  res.emplace_back(ShipType::kDestroyer);
+  return  res;
 }
 
 #endif  // CORE_GAME_GAME_COMMON_H_

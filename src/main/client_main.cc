@@ -4,7 +4,7 @@
 
 // if CLEAN_QUIT is not defined, the game ui will never quit,
 // and we main thread will never get the game result.
-#define CLEAN_EXIT
+//#define CLEAN_EXIT
 
 #include <thread>
 #include "tclap/CmdLine.h"

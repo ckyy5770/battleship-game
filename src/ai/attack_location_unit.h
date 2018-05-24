@@ -9,6 +9,7 @@
 #include <vector>
 #include "core/game/game_common.h"
 #include "ai/random_unit.h"
+#include "ai/probability_board.h"
 
 enum class StrategyAttack{
   kRandom,
@@ -19,7 +20,8 @@ enum class StrategyAttack{
 class AttackLocationUnit{
 public:
   AttackLocationUnit(ImagineBoard & enemy_board):
-    ref_enemy_board_(enemy_board){
+    ref_enemy_board_(enemy_board),
+    probability_board_(enemy_board){
   }
 
   std::size_t NextAttackLocation(const StrategyAttack & strategy){
@@ -43,6 +45,9 @@ private:
 
   // for DFS strategy
   std::vector<size_t> target_location_stack_;
+
+  // for Probability strategy
+  ProbabilityBoard probability_board_;
 
   // attack strategies
   std::size_t NextAttackLocationRandom(){
@@ -79,6 +84,13 @@ private:
   // try to place each of the ship to every location, in every direction
   // one successful placement increment the probability of all spots the ship occupied
   std::size_t NextAttackLocationProbabilitySimple(){
+    // if we use probability strategy for every move,
+    // we can UpdateProbabilityByLastAttackLocation
+    // or else we need to recalculate probability every time
+    //probability_board_.UpdateProbabilityByLastAttackLocation();
+    probability_board_.RecalculateProbability();
+
+    return probability_board_.GetOneHighestProbabilityLocation();
 
   }
 

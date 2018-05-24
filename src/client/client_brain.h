@@ -18,7 +18,7 @@ class ClientBrain{
 public:
   ClientBrain(Board& client_board):
     my_board_(client_board),
-    attack_location_unit_(opponent_board_){
+    attack_location_unit_(enemy_board_){
   }
 
   std::vector<ShipPlacementInfo> GenerateShipPlacingPlan(const StrategyPlaceShip& strategy){
@@ -30,24 +30,24 @@ public:
   }
 
   void DigestAttackResult(const AttackResult& res){
-    opponent_board_.MarkAttack(res.location);
+    enemy_board_.MarkAttack(res.location);
 
     if(res.success){
-      opponent_board_.MarkOccupied(res.location);
-      opponent_board_.DestroyOneOnBoard(res.sink_ship_type);
+      enemy_board_.MarkOccupied(res.location);
+      enemy_board_.DestroyOneOnBoard(res.sink_ship_type);
     }
 
-    opponent_board_.UpdateLastAttackInfo(res);
+    enemy_board_.UpdateLastAttackInfo(res);
   }
 
   ImagineBoard & GetRefEnemyBoard(){
-    return opponent_board_;
+    return enemy_board_;
   }
 
 
 private:
   Board& my_board_;
-  ImagineBoard opponent_board_;
+  ImagineBoard enemy_board_;
 
   ShipPlacementUnit ship_placement_unit_;
   AttackLocationUnit attack_location_unit_;
