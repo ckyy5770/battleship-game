@@ -22,7 +22,6 @@ After connection established,
 
 4. upon receiving the ready signal from the other, they will send a INFO_ROLL with a random number from 0 to 99 to decide which one should attack first. (higher one attack first, and if the numbers are equal, re-roll and send again).
 
-5. TODO
 
 
 ##### Message Format
