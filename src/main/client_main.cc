@@ -6,6 +6,10 @@
 // and we main thread will never get the game result.
 //#define CLEAN_EXIT
 
+// if DEBUG is defined, turn on the code:
+// 1. verify the probability update algorithm
+//#define AI_DEBUG
+
 #include <thread>
 #include "tclap/CmdLine.h"
 #include "client/game_client.h"

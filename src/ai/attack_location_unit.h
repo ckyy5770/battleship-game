@@ -87,8 +87,18 @@ private:
     // if we use probability strategy for every move,
     // we can UpdateProbabilityByLastAttackLocation
     // or else we need to recalculate probability every time
-    //probability_board_.UpdateProbabilityByLastAttackLocation();
-    probability_board_.RecalculateProbability();
+    probability_board_.UpdateProbabilityByLastAttackLocation();
+
+#ifdef AI_DEBUG
+    // verify the correctness of partial update algorithm
+    ProbabilityBoard new_prob_board(ref_enemy_board_);
+    for(size_t i = 0; i < kDim * kDim; ++i){
+      Logger(std::to_string(i) + "," + std::to_string(probability_board_.GetProbability(i)) + "->" + std::to_string(new_prob_board.GetProbability(i)));
+      assert(probability_board_.GetProbability(i) == new_prob_board.GetProbability(i));
+    }
+#endif
+
+    //probability_board_.RecalculateProbability();
 
     return probability_board_.GetOneHighestProbabilityLocation();
 

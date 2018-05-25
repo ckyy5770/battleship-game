@@ -18,6 +18,10 @@ public:
     InitProbability();
   }
 
+  size_t GetProbability(size_t location){
+    return probability_board_[location];
+  }
+
   size_t GetOneHighestProbabilityLocation(){
     size_t size = highest_probability_locations_.size();
     return highest_probability_locations_[RandomUnit::GetRandomSizeT(0, size - 1)];
@@ -56,13 +60,24 @@ public:
 
   // Update probabilities caused by changing of one location
   void UpdateProbabilityByLastAttackLocation(){
+    Logger("last attacked: " + std::to_string(ref_enemy_board_.last_attack_location_));
+    Logger("last attacked: " + std::to_string(ref_enemy_board_.last_attack_success_));
+    Logger("last attacked: " + std::to_string(ref_enemy_board_.last_attack_sink_ship_type_));
+
     size_t location = ref_enemy_board_.last_attack_location_;
     unsigned char & ref_state = ref_enemy_board_.states_[location];
-    // we update probabilities surround the given position
-    // iff the given position is marked ATTACKED but not OCCUPIED in the last movement
-    if((ref_state & ImagineBoard::ATTACKED) && !(ref_state & ImagineBoard::OCCUPIED)){
+    // we update probabilities surround the last attack position
+    // iff the last movement is not success
+    if(!ref_enemy_board_.last_attack_success_){
       std::vector<ShipPlacementInfo> placements = GetImpactedPlacement(location);
+
+      //Logger("last attacked: " + std::to_string(location));
+      Logger("impacted placements:");
+
+
       for(auto placement : placements){
+        Logger("type: " + std::to_string(placement.type) + ", location: " + std::to_string(placement.head_location) + ", direction: " + std::to_string(placement.direction));
+
         //TODO: this direct mofication of enemy board has potential HUGE multi-threading issue
         // turn ATTACKED off
         ref_state &= ~ImagineBoard::ATTACKED;
@@ -76,12 +91,33 @@ public:
       }
     }
 
-    RemoveProbabilityLastAttackedLocation();
+    // we update probabilities of whole board,
+    // iff the last movement is success and we sink a ship
+    ShipType last_attack_sink_type = ref_enemy_board_.last_attack_sink_ship_type_;
+    if(ref_enemy_board_.last_attack_success_ && last_attack_sink_type != ShipType::kNotAShip){
+      // TODO: need a better way to update here
+      RecalculateProbability();
+      /*
+      for(size_t i = 0; i < kDim * kDim; ++i){
+        if(ref_enemy_board_.DoesShipFit(last_attack_sink_type, i, Direction::kVertical)){
+          DecrementProbablity(last_attack_sink_type, i, Direction::kVertical, 1);
+        }
+        if(ref_enemy_board_.DoesShipFit(last_attack_sink_type, i, Direction::kHorisontal)){
+          DecrementProbablity(last_attack_sink_type, i, Direction::kHorisontal, 1);
+        }
+      }
+       */
+    }
+
+    // TODO: need a better way to remove probability for one movement
+    //RemoveProbabilityLastAttackedLocation()
+    RemoveProbabilityAttackedLocations();
     UpdateStats();
 
     for(auto loca : highest_probability_locations_){
       Logger(std::to_string(loca) + "," + std::to_string(highest_probability_));
     }
+
   }
 
   void RemoveProbabilityAttackedLocations(){
