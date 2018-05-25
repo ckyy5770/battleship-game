@@ -13,9 +13,11 @@
 
 class GameUi{
 public:
-  GameUi(Board& my_board, ImagineBoard& enemy_board):
+  // TODO: make first two ref const, along with their getter function
+  GameUi(Board& my_board, ImagineBoard& enemy_board, const ProbabilityBoard& probability_board):
     ref_my_board_(my_board),
-    ref_enemy_board_(enemy_board){
+    ref_enemy_board_(enemy_board),
+    ref_prob_board_(probability_board){
   }
 
   int run(){
@@ -88,11 +90,16 @@ private:
 
   static const int kBoardLineWidth = 3;
   static const int kInfoLineWidth = 2;
+  static const int kDefaultColorR = 0;
+  static const int kDefaultColorG = 0;
+  static const int kDefaultColorB = 0;
+
 
   float x_offet_for_better_display_;
 
   Board & ref_my_board_;
   ImagineBoard & ref_enemy_board_;
+  const ProbabilityBoard & ref_prob_board_;
 
   // TODO: a flag that allow other thread to stop the endless loop
   bool stop_ = false;
@@ -109,6 +116,26 @@ private:
   void ClearCanvas(){
     glClearColor ( 1.0f, 1.0f, 1.0f, 1.0f );
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  }
+
+  void RenderProbEnemyBoard(float board_center_x, float board_center_y, float board_width){
+    float width_per_square = board_width / kBoardDim;
+    float center_left_bottom_x = board_center_x - board_width / 2 + width_per_square / 2;
+    float center_left_bottom_y = board_center_y - board_width / 2 + width_per_square / 2;
+
+    for(size_t i = 1; i < kBoardDim; i++){
+      for(size_t j = 0; j < kBoardDim - 1; j++){
+        float grey_scale = 1.0f - 0.7f * (ref_prob_board_.GetProbabilityScale(ToLocation(i, j)));
+        RenderShade(center_left_bottom_x + i * width_per_square, center_left_bottom_y + j * width_per_square, width_per_square, grey_scale, grey_scale, grey_scale);
+      }
+    }
+  }
+
+  // for now, only used for RenderProbEnemyBoard()
+  size_t ToLocation(size_t i, size_t j){
+    size_t col = i - 1;
+    size_t row = 9 - j;
+    return row * 10 + col;
   }
 
   void RenderMyInfo(){
@@ -209,8 +236,12 @@ private:
     float center_x = kBoardCanvasWidth / 4 * 3;
     float center_y = kBoardCanvasHeight / 2 + kBoardCanvasHeightOffset;
     float width = kBoardCanvasHeight - kBoardCanvasMargin;
+
+    RenderProbEnemyBoard(center_x, center_y, width);
+
     RenderBoardBase(center_x, center_y, width);
     RenderStatesEnemyBoard(center_x, center_y, width);
+
   }
 
   void RenderStatesEnemyBoard(float board_center_x, float board_center_y, float board_width){
@@ -359,6 +390,31 @@ private:
     glVertex3f(left_bottom_x, left_bottom_y, 0.0);
     glEnd();
   }
+
+  void RenderShade(float center_x, float center_y, float width, float r, float g, float b){
+
+    float left_top_x = center_x - width / 2;
+    float left_top_y = center_y + width / 2;
+
+    float left_bottom_x = center_x - width / 2;
+    float left_bottom_y = center_y - width / 2;
+
+    float right_top_x = center_x + width / 2;
+    float right_top_y = center_y + width / 2;
+
+    float right_bottom_x = center_x + width / 2;
+    float right_bottom_y = center_y - width / 2;
+
+    glColor3f(r, g, b);
+    glBegin(GL_POLYGON);
+    glVertex3f(left_top_x, left_top_y, 0.0);
+    glVertex3f(right_top_x, right_top_y, 0.0);
+    glVertex3f(right_bottom_x, right_bottom_y, 0.0);
+    glVertex3f(left_bottom_x, left_bottom_y, 0.0);
+    glEnd();
+    glColor3d(kDefaultColorR, kDefaultColorG, kDefaultColorB);
+  }
+
 
   void RenderBoardBase(float center_x, float center_y, float width){
     float width_per_square = width / kBoardDim;

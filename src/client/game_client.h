@@ -134,6 +134,10 @@ public:
     return cli_brain_.GetRefEnemyBoard();
   }
 
+  const ProbabilityBoard& GetRefProbabilityBoard(){
+    return cli_brain_.GetRefProbBoard();
+  }
+
 private:
   const ClientType &cli_type_;
   const ClientId &cli_id_;

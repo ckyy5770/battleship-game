@@ -22,6 +22,13 @@ public:
     return probability_board_[location];
   }
 
+  // 0.0 - 1.0
+  float GetProbabilityScale(const size_t location) const{
+    float off_set = static_cast<float>(lowest_probability_);
+    float scale = highest_probability_ - lowest_probability_;
+    return (static_cast<float>(probability_board_[location]) - off_set) / scale;
+  }
+
   size_t GetOneHighestProbabilityLocation(){
     size_t size = highest_probability_locations_.size();
     return highest_probability_locations_[RandomUnit::GetRandomSizeT(0, size - 1)];

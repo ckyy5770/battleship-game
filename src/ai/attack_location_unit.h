@@ -40,6 +40,10 @@ public:
       }
     }
   }
+
+  const ProbabilityBoard& GetRefProbBoard(){
+    return probability_board_;
+  }
 private:
   ImagineBoard & ref_enemy_board_;
 
@@ -87,7 +91,9 @@ private:
     // if we use probability strategy for every move,
     // we can UpdateProbabilityByLastAttackLocation
     // or else we need to recalculate probability every time
-    probability_board_.UpdateProbabilityByLastAttackLocation();
+
+    //probability_board_.UpdateProbabilityByLastAttackLocation();
+    probability_board_.RecalculateProbability();
 
 #ifdef AI_DEBUG
     // verify the correctness of partial update algorithm
@@ -97,8 +103,6 @@ private:
       assert(probability_board_.GetProbability(i) == new_prob_board.GetProbability(i));
     }
 #endif
-
-    //probability_board_.RecalculateProbability();
 
     return probability_board_.GetOneHighestProbabilityLocation();
 

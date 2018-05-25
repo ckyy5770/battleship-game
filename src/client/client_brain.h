@@ -44,6 +44,10 @@ public:
     return enemy_board_;
   }
 
+  const ProbabilityBoard & GetRefProbBoard(){
+    return attack_location_unit_.GetRefProbBoard();
+  }
+
 
 private:
   Board& my_board_;

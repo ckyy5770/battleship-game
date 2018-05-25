@@ -63,7 +63,7 @@ int main(const int argc, const char** argv){
 
   GameClient client(type, peer_ip, port, client_id, game_id, pthread_self());
 
-  GameUi ui(client.GetRefMyBoard(), client.GetRefEnemyBoard());
+  GameUi ui(client.GetRefMyBoard(), client.GetRefEnemyBoard(), client.GetRefProbabilityBoard());
 
   std::thread cli_thread(RunClient, std::ref(client));
 
