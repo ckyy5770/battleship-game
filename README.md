@@ -12,7 +12,7 @@ implementation of classic [Battleship Game](https://en.wikipedia.org/wiki/Battle
 
 ## A glance of game
 
-![alt text](https://raw.githubusercontent.com/iloveyoukcl5770/battleship-game/master/imgs/battleship_gameplay_screenshot.png)
+[[https://github.com/iloveyoukcl5770/battleship-game/master/imgs/battleship_gameplay_screenshot.png]]
 
 ## Design (incomplete)
 
