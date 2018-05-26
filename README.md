@@ -2,7 +2,19 @@
 
 implementation of classic [Battleship Game](https://en.wikipedia.org/wiki/Battleship_(game))
 
-## Design
+## Dependencies
+
+1. asio for networking
+
+2. tclap for command parsing
+
+3. opengl and glfw for graphics
+
+## A glance of game
+
+![alt text](https://raw.githubusercontent.com/iloveyoukcl5770/battleship-game/master/imgs/battleship_gameplay_screenshot.png)
+
+## Design (incomplete)
 
 ### Overview
 
@@ -21,8 +33,6 @@ After connection established,
 3. then they will try to read from the socket and expecting a INFO_READY from the other side.
 
 4. upon receiving the ready signal from the other, they will send a INFO_ROLL with a random number from 0 to 99 to decide which one should attack first. (higher one attack first, and if the numbers are equal, re-roll and send again).
-
-
 
 ##### Message Format
 
