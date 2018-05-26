@@ -38,6 +38,7 @@ public:
     }
 
     enemy_board_.UpdateLastAttackInfo(res);
+    attack_location_unit_.UpdateProbabilityBoard();
   }
 
   ImagineBoard & GetRefEnemyBoard(){

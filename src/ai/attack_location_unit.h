@@ -25,6 +25,26 @@ public:
     probability_board_(enemy_board){
   }
 
+  void UpdateProbabilityBoard(){
+
+#ifdef AI_DEBUG
+    // verify the correctness of partial update algorithm
+    probability_board_.UpdateProbabilityByLastAttackLocation();
+    ProbabilityBoard new_prob_board(ref_enemy_board_);
+    for(size_t i = 0; i < kDim * kDim; ++i){
+      Logger(std::to_string(i) + "," + std::to_string(probability_board_.GetProbability(i)) + "->" + std::to_string(new_prob_board.GetProbability(i)));
+      assert(probability_board_.GetProbability(i) == new_prob_board.GetProbability(i));
+    }
+#endif
+
+    // if we use probability strategy for every move,
+    // we can UpdateProbabilityByLastAttackLocation
+    // or else we need to recalculate probability every time
+
+    //probability_board_.UpdateProbabilityByLastAttackLocation();
+    probability_board_.RecalculateProbability();
+  }
+
   std::size_t NextAttackLocation(const StrategyAttack & strategy){
     switch(strategy){
       case StrategyAttack ::kRandom:{
@@ -92,22 +112,6 @@ private:
   // try to place each of the ship to every location, in every direction
   // one successful placement increment the probability of all spots the ship occupied
   std::size_t NextAttackLocationProbabilitySimple(){
-    // if we use probability strategy for every move,
-    // we can UpdateProbabilityByLastAttackLocation
-    // or else we need to recalculate probability every time
-
-    //probability_board_.UpdateProbabilityByLastAttackLocation();
-    probability_board_.RecalculateProbability();
-
-#ifdef AI_DEBUG
-    // verify the correctness of partial update algorithm
-    ProbabilityBoard new_prob_board(ref_enemy_board_);
-    for(size_t i = 0; i < kDim * kDim; ++i){
-      Logger(std::to_string(i) + "," + std::to_string(probability_board_.GetProbability(i)) + "->" + std::to_string(new_prob_board.GetProbability(i)));
-      assert(probability_board_.GetProbability(i) == new_prob_board.GetProbability(i));
-    }
-#endif
-
     return probability_board_.GetOneHighestProbabilityLocation();
 
   }
