@@ -10,7 +10,7 @@ implementation of classic [Battleship Game](https://en.wikipedia.org/wiki/Battle
 
 3. opengl and glfw for graphics
 
-## A glance of game
+## A Glance of Game
 
 ![battleship-gameplay](https://github.com/iloveyoukcl5770/battleship-game/raw/master/imgs/battleship_gameplay_screenshot.png)
 
