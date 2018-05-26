@@ -14,6 +14,20 @@ implementation of classic [Battleship Game](https://en.wikipedia.org/wiki/Battle
 
 ![battleship-gameplay](https://github.com/iloveyoukcl5770/battleship-game/raw/master/imgs/battleship_gameplay_screenshot.png)
 
+## Game Play
+
+for now, this implementation of the game is just for testing different battleship shooting strategies, i.e., it can only be played by two computers.
+
+I implemented 4 kind of shooting strategy, they are:
+
+1. random shooting
+
+2. DFS based attack
+
+3. probability based attack
+
+4. combination of 2 and 3.
+
 ## Design (incomplete)
 
 ### Overview
