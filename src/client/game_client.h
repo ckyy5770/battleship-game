@@ -190,7 +190,7 @@ private:
     // increment my move number by one
     my_board_.IncrementOneMove();
 
-    AttackResult res = cli_talker_.Attack(cli_brain_.GenerateNextAttackLocation(StrategyAttack::kProbabilitySimple));
+    AttackResult res = cli_talker_.Attack(cli_brain_.GenerateNextAttackLocation(StrategyAttack::kDFSProbability));
     cli_brain_.DigestAttackResult(res);
     if (res.attacker_win) return true;
     return false;

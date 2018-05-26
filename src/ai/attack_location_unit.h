@@ -14,7 +14,8 @@
 enum class StrategyAttack{
   kRandom,
   kDFS,
-  kProbabilitySimple
+  kProbabilitySimple,
+  kDFSProbability
 };
 
 class AttackLocationUnit{
@@ -34,6 +35,9 @@ public:
       }
       case StrategyAttack ::kProbabilitySimple:{
         return NextAttackLocationProbabilitySimple();
+      }
+      case StrategyAttack ::kDFSProbability:{
+        return NextAttackLocationDFSAndProbability();
       }
       default:{
         assert(false);
@@ -106,6 +110,24 @@ private:
 
     return probability_board_.GetOneHighestProbabilityLocation();
 
+  }
+
+
+  // the combination attack of DFS and probability
+  std::size_t NextAttackLocationDFSAndProbability(){
+    if(ref_enemy_board_.last_attack_success_ && ref_enemy_board_.last_attack_sink_ship_type_ == ShipType::kNotAShip){
+      std::vector<size_t> new_targets = ref_enemy_board_.GetSurroundingFourUnAttacked(ref_enemy_board_.last_attack_location_);
+      // append to the end of the stack
+      target_location_stack_.insert(target_location_stack_.end(), new_targets.begin(), new_targets.end());
+    }
+
+    while(!target_location_stack_.empty()){
+      size_t location = target_location_stack_.back();
+      target_location_stack_.pop_back();
+      if(!ref_enemy_board_.LocationAttacked(location)) return location;
+    }
+
+    return NextAttackLocationProbabilitySimple();
   }
 
 
