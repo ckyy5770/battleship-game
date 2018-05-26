@@ -28,7 +28,7 @@ I implemented 4 kind of shooting strategy, they are:
 
 4. combination of 2 and 3.
 
-## Design (incomplete)
+## Design (VERY incomplete, consider diving into code instead)
 
 ### Overview
 
